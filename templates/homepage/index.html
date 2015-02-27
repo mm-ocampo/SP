@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block side_block %}
+
+    <div id="trending-div">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Trending Topics</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="#">Dengue</a></li>
+                    <li class="list-group-item"><a href="#">Typhoid</a></li>
+                    <li class="list-group-item"><a href="#">Fever</a></li>
+                    <li class="list-group-item"><a href="#">asdsjdkfsd</a></li>
+                    <li class="list-group-item"><a href="#">qwerqwrqewr</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="mostsearched-div">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Most Searched Diseases</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    {% if topSearch %}
+                        {% for item in topSearch %}
+                            <li class="list-group-item"><a href="#">{{ item.word }} </a></li>
+                        {% endfor %}
+                    {% else %}
+                        <strong>Nothing to display</strong>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block search_block %}
+    <div id="search-div">
+        <h1>Search Keyword</h1>
+        <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
+        <button id="search-button" class="btn btn-success btn-lg">Search</button>
+        <!-- <form id="search-form" method="POST" class="form-inline">
+            {% csrf_token %}
+            <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
+            <input class="btn btn-success btn-lg" id="search-button" name="submit" type='submit' value="Search">
+        </form> -->
+    </div>
+{% endblock %}
+
+{% block geomap_block %}
+    <div id="map-canvas">
+    </div>
+{% endblock %}
+
+{% block js_block %}
+	<script src="{% static "js/index.js" %}"></script>
+{% endblock %}

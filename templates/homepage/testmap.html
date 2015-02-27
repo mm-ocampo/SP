@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+{% load static %}
+<html>
+<head>
+    <title>Predict Epidemic- {% block title %}Home{% endblock %} </title>
+	<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+	<link href="{% static "css/bootstrap-flat.min.css" %}" rel="stylesheet">
+</head>
+<body>
+	<div id="map-canvas">
+
+	</div>
+	<script src="{% static "js/jquery-1.11.2.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script src="{% static "js/gmaps.js" %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+    	$(document).ready(function () {
+		    var map = new GMaps({
+		      	div: '#map-canvas',
+		        lat: 14.5833,
+		        lng: 120.9667,
+		        width: '500px',
+		        height: '500px',
+		        zoom: 8,
+		        zoomControl: true,
+		        zoomControlOpt: {
+		            style: 'SMALL',
+		            position: 'TOP_LEFT'
+		        },
+		        panControl: false
+		    });
+
+			map.addMarker({
+				lat: 14.6539387,
+		        lng: 120.9648419,
+				title: 'dengue',
+				click: function(e) {
+					alert('You clicked in this marker');
+				}
+			});
+		});
+   	</script>
+</body>
+</html>
