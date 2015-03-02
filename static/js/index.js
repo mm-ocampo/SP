@@ -5,7 +5,7 @@ $(document).ready(function(){
         lng: 120.9667,
         width: '700px',
         height: '700px',
-        zoom: 5,
+        zoom: 6,
         zoomControl: true,
         zoomControlOpt: {
             style: 'SMALL',

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core import serializers
+from django.db.models import Count, Max
 from datetime import datetime
 from homepage.models import Tweet, Keyword, Tweetlog
 from ftfy import fix_text
@@ -15,9 +16,18 @@ consumer_secret = "gPIDYFqVNT4mN0ZCtei9LQDfe9JvOIushZrpqJFbBDbmTtVPkk"
 access_token = "320102909-QkVoZcIR5hPTxhlJd6u2nWEavBwZIYyIOv0kCJKf"
 access_token_secret = "TBUV4UlzVIJ7pp2sVlrD4WiaXMvIkzI1v7NTW7BB0ovn1"
 
+def view_most_searched():
+	k = Keyword.objects.order_by('-searchFrequency')[:10]
+	return k
+
+def view_trending():
+	t = Tweet.objects.values('keyword').order_by('-keyword__count').annotate(Count('keyword'))[:10]
+	return t
+
 def index(request):
-	topSearch = Keyword.objects.order_by('-searchFrequency')[:5]
-	context_dict = {'topSearch': topSearch}
+	topSearch = view_most_searched()
+	trending = view_trending()
+	context_dict = {'topSearch': topSearch, 'trending': trending}
 	return render(request, 'homepage/index.html', context_dict)
 
 def search_keyword(request):
@@ -43,7 +53,7 @@ def search_keyword(request):
 		api = tweepy.API(auth)
 		places = api.geo_search(query="Philippines", granularity="country")
 		place_id = places[0].id
-		tweets = api.search(q=keyword+ " place:%s" % place_id, count=20)
+		tweets = api.search(q=keyword+ " place:%s" % place_id, count=100)
 		for tweet in tweets:
 			tweetId = tweet.id_str
 			lon = tweet.coordinates['coordinates'][0]
@@ -79,4 +89,5 @@ def insert_tweet(tweetId, k, lon, lat, date):
 	t = Tweet(tweetId=tweetId, keyword=k, lon=lon, lat=lat, date=date, city=city)
 	t.save()
 	return t
+
 

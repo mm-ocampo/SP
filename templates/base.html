@@ -4,17 +4,26 @@
 <html>
 <head>
     <title>Predict Epidemic- {% block title %}Home{% endblock %} </title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
 	<link href="{% static "css/bootstrap-flat.min.css" %}" rel="stylesheet">
 	<link href="{% static "css/homepage.css" %}" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">
-    	<!-- <div id="homepage-nav" class="row">
-    		<div class="col-md-12">
-    			<h3 class="text-left">Predict Epidemic</h3>
-    		</div>
-    	</div> -->
+        <div id="top-banner" class="row text-center">
+            <img src="{% static "images/logo.png" %}"/>
+            <h1>Preview. Predict. Prevent.</h1>
+            <h3>A site that shows and forecasts the propagation of diseases in the Philippines to save the lives of people.<h3>
+        </div>
+        <div id="nav-div" class="row">
+            <div class="col-md-3 text-center">
+                <img src="{% static "images/logo.png" %}"width=50px height=50px />
+                <span id="site-title">Predemic</span>
+            </div>
+        </div>
     	<div id="body-main" class="row">
     		<div class="col-md-3">
     			{% block side_block %} {% endblock %} 
@@ -28,14 +37,6 @@
                 </div>
 			</div>
     	</div>
-    	<!-- <div id="footer" class="row">
-    		<div class="col-md-12">
-    			<p class="text-center"> 
-    				Copyright© 2015<br/>
-    				Ocampo, Ma. Margarita M.<br/>
-    			</p>
-    		</div>
-    	</div> -->
     <div>
 	<script src="{% static "js/jquery-1.11.2.min.js" %}"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>

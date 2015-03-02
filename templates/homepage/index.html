@@ -7,54 +7,61 @@
 {% endblock %}
 
 {% block side_block %}
-
-    <div id="trending-div">
+    <!-- collapse for trending topics -->
+    <div class="panel-group" id="trending-div">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Trending Topics</h3>
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#trending-div" href="#trending-div-list">Trending Diseases</a>
+                </h4>
             </div>
-            <div class="panel-body">
-                <ul class="list-group">
-                    <li class="list-group-item"><a href="#">Dengue</a></li>
-                    <li class="list-group-item"><a href="#">Typhoid</a></li>
-                    <li class="list-group-item"><a href="#">Fever</a></li>
-                    <li class="list-group-item"><a href="#">asdsjdkfsd</a></li>
-                    <li class="list-group-item"><a href="#">qwerqwrqewr</a></li>
-                </ul>
+            <div class="panel-collapse collapse in" id="trending-div-list">
+                <div class="list-group">
+                    {% if trending %}
+                        {% for item in trending %}
+                            <a href="#" class="list-group-item">{{ item.keyword }} </a>
+                        {% endfor %}
+                        {% else %}
+                            <strong>Nothing to display.</strong>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-    <div id="mostsearched-div">
+    <!-- end collapse for trending topics -->
+
+    <!-- collapse for most searched diseases -->
+    <div class="panel-group" id="mostsearched-div">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Most Searched Diseases</h3>
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#mostsearched-div" href="#mostsearched-div-list">Most Searched Diseases</a>
+                </h4>
             </div>
-            <div class="panel-body">
-                <ul class="list-group">
+            <div class="panel-collapse collapse in" id="mostsearched-div-list">
+                <div class="list-group">
                     {% if topSearch %}
                         {% for item in topSearch %}
-                            <li class="list-group-item"><a href="#">{{ item.word }} </a></li>
+                            <a href="#" class="list-group-item">{{ item.word }} </a>
                         {% endfor %}
                     {% else %}
                         <strong>Nothing to display</strong>
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </div>
     </div>
+    <!-- end collapse for most searched diseases -->
 {% endblock %}
 
 {% block search_block %}
+    <!-- div for search -->
     <div id="search-div">
         <h1>Search Keyword</h1>
         <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
         <button id="search-button" class="btn btn-success btn-lg">Search</button>
-        <!-- <form id="search-form" method="POST" class="form-inline">
-            {% csrf_token %}
-            <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
-            <input class="btn btn-success btn-lg" id="search-button" name="submit" type='submit' value="Search">
-        </form> -->
     </div>
+    <!-- end div for search -->
 {% endblock %}
 
 {% block geomap_block %}
