@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Count, Max
+from django.core.serializers.json import DjangoJSONEncoder
 from datetime import datetime
 from homepage.models import Tweet, Keyword, Tweetlog
 from ftfy import fix_text
@@ -94,7 +95,10 @@ def search_keyword(request):
 	return HttpResponse(json_data, content_type='application/json')
 
 
-def model_data(request):
+def get_tweet_frequency(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
 		t = Tweet.objects.filter(keyword = keyword).values('city').order_by('-city__count').annotate(Count('city'))
+		json_data = json.dumps(list(t), cls=DjangoJSONEncoder)
+	# return HttpResponse(t, content_type='application/json')
+	return HttpResponse(json_data, content_type = "application/json")

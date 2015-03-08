@@ -33,13 +33,27 @@ $(document).ready(function(){
             console.log('success!');
             map_tweets(tweets);
         })
-    };
-
+    }
 
 	$("#search-button").click(function(){
 		console.log("form submitted");
-        tweets = '';
         var word = $('#search-field').val();
         get_tweets(word);
 	});
+
+    function get_frequency(word){
+        var jqxhr = $.get('/homepage/get_tweet_frequency/', {keyword: word}, function(data){
+            frequencies = data;
+        })
+        .done(function() {
+            console.log('success!');
+            console.log(frequencies);
+        })
+    }
+
+    $("#test-button").click(function(){
+        console.log("test button clicked");
+        var word = $('#search-field').val();
+        get_frequency(word);
+    });
 });
