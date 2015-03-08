@@ -39,7 +39,7 @@ def search_keyword(request):
 
 		# insert/update keyword to database
 		try:
-			k = Keyword.objects.get(word=keyword)
+			k = Keyword.objects.get(word = keyword)
 			if k:
 				k.searchFrequency += 1
 				k.date = datetime.now()
@@ -49,11 +49,15 @@ def search_keyword(request):
 			k.save()
 
 		# search tweets
-		# log = Keyword.objects.get(word=keyword)
 		api = tweepy.API(auth)
-		places = api.geo_search(query="Philippines", granularity="country")
+		places = api.geo_search(query = "Philippines", granularity = "country")
 		place_id = places[0].id
-		tweets = api.search(q=keyword+ " place:%s" % place_id, count=100)
+		log = Tweetlog.objects.get(keyword = keyword)
+		# get latest tweet only based on tweetlogs
+		if log:
+			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId))
+		else:
+			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100)
 		for tweet in tweets:
 			tweetId = tweet.id_str
 			lon = tweet.coordinates['coordinates'][0]
@@ -78,7 +82,6 @@ def search_keyword(request):
 		# get markers
 		m = Tweet.objects.filter(keyword=keyword)
 		json_data = serializers.serialize('json', m)
-		print(json_data)
 	# return HttpResponse(context_dict)	
 	# return HttpResponse(json.dumps(context_dict), content_type='application/json')
 	return HttpResponse(json_data, content_type='application/json')
