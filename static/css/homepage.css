@@ -67,7 +67,17 @@ body{
 	margin-left: 20px;
 }
 
-#trending-div, #mostsearched-div{
+.panel-primary-custom{
+	border-color: #d2222c;
+}
+
+.panel-primary > .panel-heading-custom {
+    background: #d2222c;
+    border-color: #d2222c;
+}
+
+.panel-primary :hover {
+    background: #413d3d;
 }
 
 #mostsearched-div{

@@ -30,8 +30,14 @@ def index(request):
 	context_dict = {'topSearch': topSearch, 'trending': trending}
 	return render(request, 'homepage/index.html', context_dict)
 
+def insert_tweet(tweetId, k, lon, lat, date):
+	g = geocoder.google([lat, lon], method='reverse')
+	city = g.city
+	t = Tweet(tweetId=tweetId, keyword=k, lon=lon, lat=lat, date=date, city=city)
+	t.save()
+	return t
+
 def search_keyword(request):
-	context_dict = {}
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
 		auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -52,45 +58,43 @@ def search_keyword(request):
 		api = tweepy.API(auth)
 		places = api.geo_search(query = "Philippines", granularity = "country")
 		place_id = places[0].id
-		log = Tweetlog.objects.get(keyword = keyword)
-		# get latest tweet only based on tweetlogs
-		if log:
-			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId))
-		else:
-			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100)
-		for tweet in tweets:
-			tweetId = tweet.id_str
-			lon = tweet.coordinates['coordinates'][0]
-			lat = tweet.coordinates['coordinates'][1]
-			date = tweet.created_at
-			insert_tweet(tweetId, k, lon, lat, date)
-		sinceId = tweets[0].id_str
-		maxId = tweets[len(tweets) - 1].id_str
-
-		# save/update to tweetlog
 		try:
-			t = Tweetlog.objects.get(keyword=keyword)
-			if t:
-				t.sinceId = sinceId
-				t.maxId = maxId
-				t.date = datetime.now()
-				t.save()
+			log = Tweetlog.objects.get(keyword = keyword)
+			if log:
+				tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId))
 		except Tweetlog.DoesNotExist:
-			t = Tweetlog(keyword = k, sinceId = sinceId, maxId = maxId, date = datetime.now())
-			t.save()
+			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100)
+			
+		if tweets:
+			for tweet in tweets:
+				tweetId = tweet.id_str
+				lon = tweet.coordinates['coordinates'][0]
+				lat = tweet.coordinates['coordinates'][1]
+				date = tweet.created_at
+				insert_tweet(tweetId, k, lon, lat, date)
+			sinceId = tweets[0].id_str
+			maxId = tweets[len(tweets) - 1].id_str
+
+			# save/update to tweetlog
+			try:
+				t = Tweetlog.objects.get(keyword=keyword)
+				if t:
+					t.sinceId = sinceId
+					t.maxId = maxId
+					t.date = datetime.now()
+					t.save()
+			except Tweetlog.DoesNotExist:
+				t = Tweetlog(keyword = k, sinceId = sinceId, maxId = maxId, date = datetime.now())
+				t.save()
 
 		# get markers
 		m = Tweet.objects.filter(keyword=keyword)
 		json_data = serializers.serialize('json', m)
-	# return HttpResponse(context_dict)	
-	# return HttpResponse(json.dumps(context_dict), content_type='application/json')
+	
 	return HttpResponse(json_data, content_type='application/json')
 
-def insert_tweet(tweetId, k, lon, lat, date):
-	g = geocoder.google([lat, lon], method='reverse')
-	city = g.city
-	t = Tweet(tweetId=tweetId, keyword=k, lon=lon, lat=lat, date=date, city=city)
-	t.save()
-	return t
 
-
+def model_data(request):
+	if request.method == 'GET':
+		keyword = fix_text(request.GET['keyword'])
+		t = Tweet.objects.filter(keyword = keyword).values('city').order_by('-city__count').annotate(Count('city'))

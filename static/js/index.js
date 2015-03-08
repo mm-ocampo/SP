@@ -23,20 +23,23 @@ $(document).ready(function(){
                 title: tweets[i].fields['tweetId'],
             });
         };
-    }
+    };
+
+    function get_tweets(word){
+        var jqxhr = $.get('/homepage/search_keyword/', {keyword: word}, function(data){
+            tweets = data;
+        })
+        .done(function() {
+            console.log('success!');
+            map_tweets(tweets);
+        })
+    };
+
 
 	$("#search-button").click(function(){
 		console.log("form submitted");
         tweets = '';
-		var jqxhr = $.get('/homepage/search_keyword/', {keyword: $('#search-field').val()}, function(data){
-			tweets = data;
-			/*for (var tweet in tweets){
-				console.log(tweet.user + " : " + tweet.text);
-			}*/
-    	})
-    	.done(function() {
-            console.log('success!');
-            map_tweets(tweets);
-		})
+        var word = $('#search-field').val();
+        get_tweets(word);
 	});
 });
