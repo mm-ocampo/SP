@@ -17,7 +17,8 @@ class Tweet(models.Model):
 	lat = models.FloatField()
 	date = models.DateTimeField()
 	city = models.CharField(max_length=50, default='')
-
+	province = models.CharField(max_length=50, default='')
+	
 	def __str__(self):
 		return self.tweetId
 

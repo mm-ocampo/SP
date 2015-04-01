@@ -107,3 +107,15 @@ body{
 #search-field:focus{
 	outline-color: transparent;
 }
+
+#geochart-div{
+	height: 700px;
+	width: 700px;
+}
+
+#map-class{
+	background-color: black;
+	height: 800px;
+	width: 800px;
+	padding: 20px 20px;
+}

@@ -33,8 +33,12 @@ def index(request):
 
 def insert_tweet(tweetId, k, lon, lat, date):
 	g = geocoder.google([lat, lon], method='reverse')
+	if g.county is not None:
+		province = g.county
+	else:
+		province = "NCR"
 	city = g.city
-	t = Tweet(tweetId=tweetId, keyword=k, lon=lon, lat=lat, date=date, city=city)
+	t = Tweet(tweetId = tweetId, keyword = k, lon = lon, lat = lat, date = datetime.date(date), city = city, province = province)
 	t.save()
 	return t
 
@@ -102,3 +106,25 @@ def get_tweet_frequency(request):
 		json_data = json.dumps(list(t), cls=DjangoJSONEncoder)
 	# return HttpResponse(t, content_type='application/json')
 	return HttpResponse(json_data, content_type = "application/json")
+
+
+
+# def get_ds(alpha, s, i):
+# 	return (-1 * alpha * s * i)
+
+# def get_di(alpha, s, i, beta):
+# 	return ((alpha * s * i) - (beta * i))
+
+# def get_dr(beta, i):
+# 	return (beta * i)
+
+# def sir_model(request):
+# 	# transmitivity rate
+# 	alpha = 1
+# 	# recovery rate
+# 	beta = 1
+# 	s = 1
+# 	i = 1
+# 	r = 1
+#	t = Tweet.objects.filter(keyword = keyword).values('date').order_by('-date__count').annotate(Count('date'))
+#  	return HttpResponse()

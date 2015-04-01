@@ -60,13 +60,24 @@
         <h1>Search Keyword</h1>
         <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
         <button id="search-button" class="btn btn-success btn-lg">Search</button>
-        <button id="test-button" class="btn btn-success btn-lg"> Test </button>
+        <!-- <button id="test-button" class="btn btn-success btn-lg"> Test </button> -->
     </div>
     <!-- end div for search -->
 {% endblock %}
 
 {% block geomap_block %}
-    <div id="map-canvas">
+    <div class="map-class">
+        <!-- <h1>Tweet Map</h1> -->
+        <div id="map-canvas">
+        </div>
+    </div>
+{% endblock %}
+
+{% block geochart_block %}
+    <div class="map-class">
+        <!-- <h1>Propagation Map</h1> -->
+        <div id="geomap-div">
+        </div>
     </div>
 {% endblock %}
 

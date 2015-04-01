@@ -56,4 +56,24 @@ $(document).ready(function(){
         var word = $('#search-field').val();
         get_frequency(word);
     });
+
+    google.setOnLoadCallback(drawRegionsMap);
+
+    function drawRegionsMap() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['State', 'Popularity'],
+            ['PH-BTG', 300],
+            ['PH-CAV', 150],
+            ['PH-LAG', 100]
+        ]);
+        
+        var options = {
+          region: 'PH'
+        };
+
+        var chart = new google.visualization.GeoChart(document.getElementById('geochart-div'));
+
+        chart.draw(data, options);
+    }
 });

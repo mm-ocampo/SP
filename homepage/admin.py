@@ -2,7 +2,7 @@ from django.contrib import admin
 from homepage.models import Tweet, Keyword, Tweetlog
 
 class TweetAdmin(admin.ModelAdmin):
-	list_display = ('tweetId', 'keyword', 'lat', 'lon', 'city', 'date')
+	list_display = ('tweetId', 'keyword', 'lat', 'lon', 'city', 'province', 'date')
 
 class KeywordAdmin(admin.ModelAdmin):
 	list_display = ('word', 'date', 'searchFrequency')
