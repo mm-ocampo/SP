@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Count, Max
 from django.core.serializers.json import DjangoJSONEncoder
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from homepage.models import Tweet, Keyword, Tweetlog
 from ftfy import fix_text
 import json
@@ -16,6 +16,7 @@ consumer_key = "C42Xh9gXP9i2h9kKXgBAjBrBz"
 consumer_secret = "gPIDYFqVNT4mN0ZCtei9LQDfe9JvOIushZrpqJFbBDbmTtVPkk"
 access_token = "320102909-QkVoZcIR5hPTxhlJd6u2nWEavBwZIYyIOv0kCJKf"
 access_token_secret = "TBUV4UlzVIJ7pp2sVlrD4WiaXMvIkzI1v7NTW7BB0ovn1"
+populationPerProvince = {'ncr' : 11855975, 'ilocos norte' : 568017, 'ilocos sur' : 658587, 'la union' : 741906, 'pangasinan' : 2779862, 'batanes' : 16604, 'cagayan' : 1124773, 'isabela' : 1489645, 'nueva vizcaya' : 421355, 'quirino' : 176786, 'abra' : 234733, 'apayao' : 112636, 'benguet' : 403944, 'ifugao' : 191078, 'kalinga' :  201613, 'mountain province' : 154187,  'aurora' : 201233, 'bataan' : 687482, 'bulacan' : 2924433, 'nueva ecija' : 1955373, 'pampanga' : 2014019, 'tarlac' : 1273240, 'zambales' : 534443,  'cavite' : 3090691, 'laguna' : 2669847, 'batangas' : 2377395, 'rizal' : 2484840, 'quezon' : 1740638, 'occidental mindoro' : 452971, 'oriental mindoro' : 785602, 'marinduque' : 227828, 'romblon' : 283930, 'palawan' : 771667, 'albay' : 1233432, 'camarines norte' : 542915, 'camarines sur' : 1822371, 'catanduanes' : 246300, 'masbate' : 834650, 'sorsogon' : 740743, 'aklan' : 535725, 'antique' : 546031, 'negros occidental' : 2396039, 'capiz' : 719685, 'guimaras' : 162943, 'iloilo' :  1805576, 'biliran' : 161760, 'eastern samar' : 428877, 'leyte' : 1567984, 'northern samar' : 589013, 'samar' : 733377, 'southern leyte' : 399137, 'zamboanga del norte' : 957997, 'zamboanga del sur' : 959685, 'zamboanga sibugay' : 584685, 'camiguin' : 83807, 'misamis oriental' : 813856, 'lanao del norte' : 607917, 'bukidnon' : 1299192, 'misamis occidental' : 567642, 'compostela valley' : 687195, 'davao del norte' : 945764, 'davao del sur' : 574910, 'davao oriental' : 517618, 'davao occidental' : 293780, 'south cotabato' : 827200, 'sultan kudarat' : 747087, 'sarangani' : 498904, 'north cotabato' : 1226508,  'agusan del norte' : 332487, 'agusan del sur' : 656418, 'surigao del norte' : 442588, 'surigao del sur' : 561219, 'dinagat islands' : 126803, 'basilan' : 293322, 'lanao del sur' : 933260, 'maguindanao' : 944718, 'sulu' : 718290, 'tawi-tawi' : 366550}
 
 def view_most_searched():
 	k = Keyword.objects.order_by('-searchFrequency')[:10]
@@ -82,32 +83,51 @@ def search_keyword(request):
 
 			# save/update to tweetlog
 			try:
-				t = Tweetlog.objects.get(keyword=keyword)
+				print("try")
+				t = Tweetlog.objects.get(keyword = keyword)
 				if t:
 					t.sinceId = sinceId
 					t.maxId = maxId
 					t.date = datetime.now()
 					t.save()
 			except Tweetlog.DoesNotExist:
+				print("except")
 				t = Tweetlog(keyword = k, sinceId = sinceId, maxId = maxId, date = datetime.now())
 				t.save()
 
 		# get markers
-		m = Tweet.objects.filter(keyword=keyword)
+		m = Tweet.objects.filter(keyword = keyword)
 		json_data = serializers.serialize('json', m)
 	
-	return HttpResponse(json_data, content_type='application/json')
+	return HttpResponse(json_data, content_type = 'application/json')
 
 
 def get_tweet_frequency(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
-		t = Tweet.objects.filter(keyword = keyword).values('city').order_by('-city__count').annotate(Count('city'))
-		json_data = json.dumps(list(t), cls=DjangoJSONEncoder)
+		t = Tweet.objects.filter(keyword = keyword).values('province').order_by('-province__count').annotate(Count('province'))
+		json_data = json.dumps(list(t), cls = DjangoJSONEncoder)
 	# return HttpResponse(t, content_type='application/json')
 	return HttpResponse(json_data, content_type = "application/json")
 
 
+# def compute_alpha(keyword, province):
+# 	t = Tweet.objects.filter(province = province).values('date').order_by('-date__count').annotate(Count('date'))
+# 	alpha = 1
+# 	array_counter = []
+# 	i = 6
+# 	while i >= 0:
+# 		temp = date.today() - timedelta(days = i)
+# 		i -= 1
+# 		dateFrequency = {}
+# 		for item in t:
+# 			if datetime.date(item['date']) == temp :
+# 				dateFrequency[temp] = item['date__count']
+# 				break
+# 			else :
+# 				dateFrequency[temp] = 0
+# 		array_counter.append(dateFrequency)
+# 	return alpha
 
 # def get_ds(alpha, s, i):
 # 	return (-1 * alpha * s * i)
@@ -128,3 +148,4 @@ def get_tweet_frequency(request):
 # 	r = 1
 #	t = Tweet.objects.filter(keyword = keyword).values('date').order_by('-date__count').annotate(Count('date'))
 #  	return HttpResponse()
+
