@@ -82,6 +82,16 @@ def save_update_tweetlog(sinceId, maxId, keyword):
 		t = Tweetlog(keyword = k, sinceId = sinceId, maxId = maxId, date = datetime.now())
 		t.save()
 
+def get_frequency_per_province(m):
+	t = m.values('province').order_by('-province__count').annotate(Count('province'))
+	frequencyPerProvince = []
+	for item in t:
+		temp = {}
+		temp['province'] = item['province']
+		temp['frequency'] = item['province__count']
+		frequencyPerProvince.append(temp)
+	return frequencyPerProvince
+
 def search_keyword(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
@@ -110,9 +120,16 @@ def search_keyword(request):
 
 		# get all tweet of the keyword from db
 		m = Tweet.objects.filter(keyword = keyword)
-		json_data = serializers.serialize('json', m)
-	
-	return HttpResponse(json_data, content_type = 'application/json')
+		markers = serializers.serialize('json', m)
+
+		if m:
+			# get frequency of tweets per province
+			frequencyPerProvince = get_frequency_per_province(m)
+			for item in frequencyPerProvince:
+				if (item['province']).lower() in populationPerProvince:
+					item = sir_model(item, populationPerProvince[(item['province']).lower()])
+
+	return HttpResponse(markers, content_type = 'application/json')
 
 
 def get_tweet_frequency(request):
@@ -145,23 +162,28 @@ def get_tweet_frequency(request):
 # 		array_counter.append(dateFrequency)
 # 	return alpha
 
-# def get_ds(alpha, s, i):
-# 	return (-1 * alpha * s * i)
+def get_ds(alpha, s, i):
+	return (-1 * alpha * s * i)
 
-# def get_di(alpha, s, i, beta):
-# 	return ((alpha * s * i) - (beta * i))
+def get_di(alpha, s, i, beta):
+	return ((alpha * s * i) - (beta * i))
 
-# def get_dr(beta, i):
-# 	return (beta * i)
+def get_dr(beta, i):
+	return (beta * i)
 
-# def sir_model(keyword, province):
-# 	# transmitivity rate
-# 	alpha = 1/2
-# 	# recovery rate
-# 	beta = 1/7
-# 	s = 1
-# 	i = 1
-# 	r = 1
-# 	t = Tweet.objects.filter(keyword = keyword).values('date').order_by('-date__count').annotate(Count('date'))
-#  	return HttpResponse()
+def sir_model(item, population):
+	# transmitivity rate
+	alpha = 1/2
+	# recovery rate
+	beta = 1/7
 
+	i0 = item['frequency']
+	s0 = population - i0 
+	r0 = 0
+
+	ds = get_ds(alpha, s0, i0)
+	di = get_di(alpha, s0, i0, beta)
+	dr = get_dr(beta, i0)
+	print(ds, di, dr)
+
+	return item
