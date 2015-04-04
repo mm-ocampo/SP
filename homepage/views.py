@@ -39,7 +39,10 @@ def insert_tweet(tweetId, k, lon, lat, date):
 		province = g.county
 	else:
 		province = "NCR"
-	city = g.city
+	if g.city is not None:
+		city = g.city
+	else :
+		city = "None"
 	t = Tweet(tweetId = tweetId, keyword = k, lon = lon, lat = lat, date = datetime.date(date), city = city, province = province)
 	t.save()
 	return t
@@ -79,8 +82,9 @@ def save_update_tweetlog(sinceId, maxId, keyword):
 			t.date = datetime.now()
 			t.save()
 	except Tweetlog.DoesNotExist:
-		t = Tweetlog(keyword = k, sinceId = sinceId, maxId = maxId, date = datetime.now())
+		t = Tweetlog(keyword = keyword, sinceId = sinceId, maxId = maxId, date = datetime.now())
 		t.save()
+	return t
 
 def get_frequency_per_province(m):
 	t = m.values('province').order_by('-province__count').annotate(Count('province'))
@@ -103,20 +107,26 @@ def search_keyword(request):
 		tweets = search_tweets(keyword)
 			
 		if tweets:
+			temp = []
 			# save each tweet details to db
 			for tweet in tweets:
-				tweetId = tweet.id_str
 				if tweet.coordinates is not None:
+					tweetId = tweet.id_str
 					lon = tweet.coordinates['coordinates'][0]
 					lat = tweet.coordinates['coordinates'][1]
 					date = tweet.created_at
 					# insert each tweet to db
 					insert_tweet(tweetId, k, lon, lat, date)
-			sinceId = tweets[0].id_str
-			maxId = tweets[len(tweets) - 1].id_str
+					temp.append(tweetId) 
+			# sinceId = tweets[0].id_str
+			sinceId = temp[0]
+			maxId = temp[len(temp) - 1]
+			# maxId = tweets[len(tweets) - 1].id_str
 			
 			# save/update to tweetlog
-			save_update_tweetlog(sinceId, maxId)
+			print("before save")
+			save_update_tweetlog(sinceId, maxId, k)
+			print("after save")
 
 		# get all tweet of the keyword from db
 		m = Tweet.objects.filter(keyword = keyword)
@@ -177,13 +187,13 @@ def sir_model(item, population):
 	# recovery rate
 	beta = 1/7
 
-	i0 = item['frequency']
-	s0 = population - i0 
+	i0 = (item['frequency']) / population
+	s0 = (population - i0) / population 
 	r0 = 0
 
 	ds = get_ds(alpha, s0, i0)
 	di = get_di(alpha, s0, i0, beta)
 	dr = get_dr(beta, i0)
-	print(ds, di, dr)
+	print(item['province'], ds, di, dr)
 
 	return item
