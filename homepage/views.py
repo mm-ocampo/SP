@@ -18,6 +18,7 @@ consumer_secret = "gPIDYFqVNT4mN0ZCtei9LQDfe9JvOIushZrpqJFbBDbmTtVPkk"
 access_token = "320102909-QkVoZcIR5hPTxhlJd6u2nWEavBwZIYyIOv0kCJKf"
 access_token_secret = "TBUV4UlzVIJ7pp2sVlrD4WiaXMvIkzI1v7NTW7BB0ovn1"
 populationPerProvince = {'butuan city' : 309709, 'general santos city' : 538086, 'cotabato city' : 271786, 'davao city' : 1449296, 'cagayan de oro city' : 602088, 'zamboanga city' : 807129, 'isabela city' : 97857, 'tacloban city' : 221174, 'bohol' : 1255128, 'cebu' : 2619362, 'negros oriental' : 1286666, 'siquijor' : 91066, 'baguio city' : 318676, 'ncr' : 11855975, 'ilocos norte' : 568017, 'ilocos sur' : 658587, 'la union' : 741906, 'pangasinan' : 2779862, 'batanes' : 16604, 'cagayan' : 1124773, 'isabela' : 1489645, 'nueva vizcaya' : 421355, 'quirino' : 176786, 'abra' : 234733, 'apayao' : 112636, 'benguet' : 403944, 'ifugao' : 191078, 'kalinga' :  201613, 'mountain province' : 154187,  'aurora' : 201233, 'bataan' : 687482, 'bulacan' : 2924433, 'nueva ecija' : 1955373, 'pampanga' : 2014019, 'tarlac' : 1273240, 'zambales' : 534443,  'cavite' : 3090691, 'laguna' : 2669847, 'batangas' : 2377395, 'rizal' : 2484840, 'quezon' : 1740638, 'occidental mindoro' : 452971, 'oriental mindoro' : 785602, 'marinduque' : 227828, 'romblon' : 283930, 'palawan' : 771667, 'albay' : 1233432, 'camarines norte' : 542915, 'camarines sur' : 1822371, 'catanduanes' : 246300, 'masbate' : 834650, 'sorsogon' : 740743, 'aklan' : 535725, 'antique' : 546031, 'negros occidental' : 2396039, 'capiz' : 719685, 'guimaras' : 162943, 'iloilo' :  1805576, 'biliran' : 161760, 'eastern samar' : 428877, 'leyte' : 1567984, 'northern samar' : 589013, 'samar' : 733377, 'southern leyte' : 399137, 'zamboanga del norte' : 957997, 'zamboanga del sur' : 959685, 'zamboanga sibugay' : 584685, 'camiguin' : 83807, 'misamis oriental' : 813856, 'lanao del norte' : 607917, 'bukidnon' : 1299192, 'misamis occidental' : 567642, 'compostela valley' : 687195, 'davao del norte' : 945764, 'davao del sur' : 574910, 'davao oriental' : 517618, 'davao occidental' : 293780, 'south cotabato' : 827200, 'sultan kudarat' : 747087, 'sarangani' : 498904, 'north cotabato' : 1226508,  'agusan del norte' : 332487, 'agusan del sur' : 656418, 'surigao del norte' : 442588, 'surigao del sur' : 561219, 'dinagat islands' : 126803, 'basilan' : 293322, 'lanao del sur' : 933260, 'maguindanao' : 944718, 'sulu' : 718290, 'tawi-tawi' : 366550}
+predictionData = []
 
 def view_most_searched():
 	k = Keyword.objects.order_by('-searchFrequency')[:10]
@@ -68,7 +69,7 @@ def search_tweets(keyword):
 	try:
 		log = Tweetlog.objects.get(keyword = keyword)
 		if log:
-			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId))
+			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId), )
 	except Tweetlog.DoesNotExist:
 		tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100)
 	return tweets
@@ -105,7 +106,6 @@ def search_keyword(request):
 
 		# search tweets
 		tweets = search_tweets(keyword)
-			
 		if tweets:
 			temp = []
 			# save each tweet details to db
@@ -122,14 +122,13 @@ def search_keyword(request):
 			sinceId = temp[0]
 			maxId = temp[len(temp) - 1]
 			# maxId = tweets[len(tweets) - 1].id_str
-			
-			# save/update to tweetlog
-			print("before save")
-			save_update_tweetlog(sinceId, maxId, k)
-			print("after save")
 
+			# save/update to tweetlog
+			save_update_tweetlog(sinceId, maxId, k)
 		# get all tweet of the keyword from db
-		m = Tweet.objects.filter(keyword = keyword)
+		end_date = datetime.date(datetime.now())
+		start_date = end_date - timedelta(days = 6)
+		m = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date))
 		markers = serializers.serialize('json', m)
 
 		if m:
@@ -137,7 +136,8 @@ def search_keyword(request):
 			frequencyPerProvince = get_frequency_per_province(m)
 			for item in frequencyPerProvince:
 				if (item['province']).lower() in populationPerProvince:
-					item = sir_model(item, populationPerProvince[(item['province']).lower()])
+					item = sir_model(item, populationPerProvince[(item['province']).lower()], keyword)
+					predictionData.append(item)
 
 	return HttpResponse(markers, content_type = 'application/json')
 
@@ -149,28 +149,49 @@ def get_tweet_frequency(request):
 		frequencyPerProvince = {}
 		for item in t:
 			frequencyPerProvince[item['province']] = item['province__count']
-		# json_data = json.dumps(list(t), cls = DjangoJSONEncoder)
-		json_data = json.dumps(frequencyPerProvince, cls = DjangoJSONEncoder)
+		json_data = json.dumps(list(predictionData), cls = DjangoJSONEncoder)
+		# json_data = serializers.serialize('json', predictionData)
+		# json_data = json.dumps(frequencyPerProvince, cls = DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type = "application/json")
 
 
-# def compute_alpha(keyword, province):
-# 	t = Tweet.objects.filter(province = province).values('date').order_by('-date__count').annotate(Count('date'))
-# 	alpha = 1
-# 	array_counter = []
-# 	i = 6
-# 	while i >= 0:
-# 		temp = date.today() - timedelta(days = i)
-# 		i -= 1
-# 		dateFrequency = {}
-# 		for item in t:
-# 			if datetime.date(item['date']) == temp :
-# 				dateFrequency[temp] = item['date__count']
-# 				break
-# 			else :
-# 				dateFrequency[temp] = 0
-# 		array_counter.append(dateFrequency)
-# 	return alpha
+def compute_alpha(keyword, province):
+	t = Tweet.objects.filter(province = province).values('date').order_by('-date__count').annotate(Count('date'))
+	alpha = 1
+	array_counter = []
+	i = 6
+	# while i >= 0:
+	# 	temp = date.today() - timedelta(days = i)
+	# 	i -= 1
+	# 	dateFrequency = {}
+	# 	counter = 0
+	# 	for item in t:
+	# 		counter += 1
+	# 		if datetime.date(item['date']) == temp :
+	# 			dateFrequency[counter] = item['date__count']
+	# 			break
+	# 		else :
+	# 			dateFrequency[counter] = 0
+	counter = 1
+	while i >= 0:
+		temp = date.today() - timedelta(days = i)
+		i -= 1
+		dateFrequency = []
+		flag = 0
+		freq = 0
+		for item in t:
+			if datetime.date(item['date']) == temp :
+				flag = 1
+				freq = item['date__count']
+				break
+		dateFrequency.append(counter)
+		if flag == 1:
+			dateFrequency.append(freq)
+		else :
+			dateFrequency.append(0)
+		array_counter.append(dateFrequency)
+		counter += 1
+	return alpha
 
 def get_ds(alpha, s, i):
 	return (-1 * alpha * s * i)
@@ -181,19 +202,39 @@ def get_di(alpha, s, i, beta):
 def get_dr(beta, i):
 	return (beta * i)
 
-def sir_model(item, population):
+def sir_model(item, population, keyword):
 	# transmitivity rate
 	alpha = 1/2
 	# recovery rate
 	beta = 1/7
+	compute_alpha(keyword, item['province'])
 
-	i0 = (item['frequency']) / population
-	s0 = (population - i0) / population 
-	r0 = 0
+	# 40% of the population are active twitter users
+	population *= 0.4
+
+	infected = item['frequency']
+	susceptible = population - item['frequency']
+	recovered = 0
+
+	i0 = infected / population
+	s0 = susceptible / population 
+	r0 = recovered
 
 	ds = get_ds(alpha, s0, i0)
 	di = get_di(alpha, s0, i0, beta)
 	dr = get_dr(beta, i0)
-	print(item['province'], ds, di, dr)
 
+	infected2 = infected + (di * population)
+	susceptible2 = susceptible + (ds * population)
+	recovered2 = recovered + (dr * population)
+
+	total = infected + susceptible + recovered
+
+	# convert province to lat lang
+	g = geocoder.google(item['province'])
+	item['lat'] = g.lat
+	item['lon'] = g.lng
+	item['susceptible']  = susceptible2
+	item['infected'] = infected2
+	item['recovered'] = recovered2 
 	return item
