@@ -131,6 +131,16 @@ def search_keyword(request):
 		m = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date))
 		markers = serializers.serialize('json', m)
 
+	return HttpResponse(markers, content_type = 'application/json')
+
+
+def get_tweet_frequency(request):
+	if request.method == 'GET':
+		keyword = fix_text(request.GET['keyword'])
+		end_date = datetime.date(datetime.now())
+		start_date = end_date - timedelta(days = 6)
+		m = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date))
+		
 		if m:
 			# get frequency of tweets per province
 			frequencyPerProvince = get_frequency_per_province(m)
@@ -138,16 +148,10 @@ def search_keyword(request):
 				if (item['province']).lower() in populationPerProvince:
 					item = sir_model(item, populationPerProvince[(item['province']).lower()], keyword)
 					predictionData.append(item)
-	return HttpResponse(markers, content_type = 'application/json')
-
-
-def get_tweet_frequency(request):
-	if request.method == 'GET':
-		keyword = fix_text(request.GET['keyword'])
-		t = Tweet.objects.filter(keyword = keyword).values('province').order_by('-province__count').annotate(Count('province'))
-		frequencyPerProvince = {}
-		for item in t:
-			frequencyPerProvince[item['province']] = item['province__count']
+		# t = Tweet.objects.filter(keyword = keyword).values('province').order_by('-province__count').annotate(Count('province'))
+		# frequencyPerProvince = {}
+		# for item in t:
+		# 	frequencyPerProvince[item['province']] = item['province__count']
 		json_data = json.dumps(list(predictionData), cls = DjangoJSONEncoder)
 		# json_data = serializers.serialize('json', predictionData)
 		# json_data = json.dumps(frequencyPerProvince, cls = DjangoJSONEncoder)
@@ -203,32 +207,31 @@ def get_dr(beta, i):
 	return (beta * i)
 
 def sir_model(item, population, keyword):
+	# based from http://wearesocial.net/tag/philippines/
+	# internet users in ph = 37602976
+	# active twitter users = 40%
+	twitterPopulation = 37602976 * 0.4
 	# transmitivity rate
 	alpha = 1/2
 	# recovery rate
 	beta = 1/7
 	compute_alpha(keyword, item['province'])
 
-	# 40% of the population are active twitter users
-	population *= 0.4
+	initialInfected = round((item['frequency'] * population)/twitterPopulation)
+	initialSusceptible = population - initialInfected
+	initialRecovered = 0
 
-	infected = item['frequency']
-	susceptible = population - item['frequency']
-	recovered = 0
-
-	i0 = infected / population
-	s0 = susceptible / population 
-	r0 = recovered
+	i0 = initialInfected / population
+	s0 = initialSusceptible / population 
+	r0 = initialRecovered
 
 	ds = get_ds(alpha, s0, i0)
 	di = get_di(alpha, s0, i0, beta)
 	dr = get_dr(beta, i0)
 
-	infected2 = infected + (di * population)
-	susceptible2 = susceptible + (ds * population)
-	recovered2 = recovered + (dr * population)
-
-	total = infected + susceptible + recovered
+	infected2 = initialInfected + (di * population)
+	susceptible2 = initialSusceptible + (ds * population)
+	recovered2 = initialRecovered + (dr * population)
 
 	# convert province to lat lang
 	g = geocoder.google(item['province'])

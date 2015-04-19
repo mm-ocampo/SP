@@ -14,7 +14,6 @@ $(document).ready(function(){
         },
         panControl: false
     });
-
    
     function map_tweets(tweets){
         console.log(tweets);
@@ -48,8 +47,8 @@ $(document).ready(function(){
     }
 
     function predict(){
-        $("#test-button").click(function(){
-            console.log("test button clicked");
+        $("#predict-button").click(function(){
+            console.log("predict button clicked");
             var word = $('#search-field').val();
             get_frequency(word);    
         });
@@ -62,19 +61,21 @@ $(document).ready(function(){
         .done(function() {
             console.log('success!');
             map_tweets(tweets);
+            $("#prediction-option-div").show();
         })
     }
 
 	$("#search-button").click(function(){
 		console.log("form submitted");
         var word = $('#search-field').val();
-        get_tweets(word);
+        var days = $('.days-choices').val();
+        get_tweets(word, days);
 	});
 
-    function get_frequency(word){
-        var jqxhr = $.get('/homepage/get_tweet_frequency/', {keyword: word}, function(data){
+    function get_frequency(word, days){
+        var jqxhr = $.get('/homepage/get_tweet_frequency/', {'keyword': word}, function(data){
             frequencies = data;
-        })
+        }, "json")
         .done(function() {
             console.log('success!');
             console.log(frequencies);

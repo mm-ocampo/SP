@@ -60,7 +60,6 @@
         <h1>Search Keyword</h1>
         <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
         <button id="search-button" class="btn btn-success btn-lg">Search</button>
-        <button id="test-button" class="btn btn-success btn-lg"> Test </button>
     </div>
     <!-- end div for search -->
 {% endblock %}
@@ -70,6 +69,20 @@
         <!-- <h1>Tweet Map</h1> -->
         <div id="map-canvas">
         </div>
+    </div>
+    <div id="prediction-option-div">
+        <div id="days-selector">
+            <select class="days-choices">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+            </select>
+        </div>
+        <button id="predict-button" class="btn btn-success btn-lg"> Predict </button>
     </div>
 {% endblock %}
 
