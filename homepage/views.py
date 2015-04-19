@@ -138,7 +138,6 @@ def search_keyword(request):
 				if (item['province']).lower() in populationPerProvince:
 					item = sir_model(item, populationPerProvince[(item['province']).lower()], keyword)
 					predictionData.append(item)
-
 	return HttpResponse(markers, content_type = 'application/json')
 
 
@@ -191,6 +190,7 @@ def compute_alpha(keyword, province):
 			dateFrequency.append(0)
 		array_counter.append(dateFrequency)
 		counter += 1
+	print(array_counter)
 	return alpha
 
 def get_ds(alpha, s, i):
