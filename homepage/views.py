@@ -137,6 +137,7 @@ def search_keyword(request):
 def get_tweet_frequency(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
+		daysCount = request.GET['count']
 		end_date = datetime.date(datetime.now())
 		start_date = end_date - timedelta(days = 6)
 		m = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date))
@@ -146,7 +147,7 @@ def get_tweet_frequency(request):
 			frequencyPerProvince = get_frequency_per_province(m)
 			for item in frequencyPerProvince:
 				if (item['province']).lower() in populationPerProvince:
-					item = sir_model(item, populationPerProvince[(item['province']).lower()], keyword)
+					item = sir_model(item, populationPerProvince[(item['province']).lower()], keyword, daysCount)
 					predictionData.append(item)
 		# t = Tweet.objects.filter(keyword = keyword).values('province').order_by('-province__count').annotate(Count('province'))
 		# frequencyPerProvince = {}
@@ -206,7 +207,7 @@ def get_di(alpha, s, i, beta):
 def get_dr(beta, i):
 	return (beta * i)
 
-def sir_model(item, population, keyword):
+def sir_model(item, population, keyword, daysCount):
 	# based from http://wearesocial.net/tag/philippines/
 	# internet users in ph = 37602976
 	# active twitter users = 40%
@@ -218,28 +219,25 @@ def sir_model(item, population, keyword):
 	beta = 1/7
 	compute_alpha(keyword, item['province'])
 
-	initialInfected = round((item['frequency'] * population)/(twitterPopulation * (population/phPopulation)))
-	initialSusceptible = population - initialInfected
-	initialRecovered = 0
+	i1 = round((item['frequency'] * population)/(twitterPopulation * (population/phPopulation)))
+	s1 = population - i1
+	r1 = 0
+	daysCount = int(daysCount)
 
-	i0 = initialInfected / population
-	s0 = initialSusceptible / population 
-	r0 = initialRecovered
+	while daysCount > 0:
+		i0 = i1 / population
+		s0 = s1 / population 
+		r0 = r1 / population
+		ds = get_ds(alpha, s0, i0)
+		di = get_di(alpha, s0, i0, beta)
+		dr = get_dr(beta, i0)
+		i1 = i1 + (di * population)
+		s1 = s1 + (ds * population)
+		r1 = r1 + (dr * population)
+		daysCount = daysCount - 1
 
-	ds = get_ds(alpha, s0, i0)
-	di = get_di(alpha, s0, i0, beta)
-	dr = get_dr(beta, i0)
-
-	infected2 = initialInfected + (di * population)
-	susceptible2 = initialSusceptible + (ds * population)
-	recovered2 = initialRecovered + (dr * population)
-
-	# convert province to lat lang
-	# g = geocoder.google(item['province'])
-	# item['lat'] = g.lat
-	# item['lon'] = g.lng
-	item['susceptible']  = susceptible2
-	item['infected'] = infected2
-	item['recovered'] = recovered2
+	item['susceptible']  = s1
+	item['infected'] = i1
+	item['recovered'] = r1
 	item['percentage'] = item['infected']/population
 	return item
