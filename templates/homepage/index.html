@@ -73,13 +73,16 @@
     <div id="prediction-option-div">
         <div id="days-selector">
             <select class="days-choices">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
+                <option value=1>1 day</option>
+                <option value=2>2 days</option>
+                <option value=3>3 days</option>
+                <option value=4>4 days</option>
+                <option value=5>5 days</option>
+                <option value=6>6 days</option>
+                <option value=7>1 week</option>
+                <option value=14>2 weeks</option>
+                <option value=21>3 weeks</option>
+                <option value=28>4 weeks</option>
             </select>
         </div>
         <button id="predict-button" class="btn btn-success btn-lg"> Predict </button>
@@ -91,6 +94,17 @@
         <!-- <h1>Propagation Map</h1> -->
         <div id="geomap-canvas">
         </div>
+    </div>
+    <div id="view-stats-div">
+        <div id="option-selector">
+            <select class="stats-choices">
+                <option></option>
+                <option>Contry</option>
+                <option>Region</option>
+                <option>Province</option>
+            </select>
+        </div>
+        <button id="view-stats-button" class="btn btn-success btn-lg">View Stats</button>
     </div>
 {% endblock %}
 

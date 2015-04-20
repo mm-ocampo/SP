@@ -14,25 +14,14 @@ $(document).ready(function(){
         },
         panControl: false
     });
-   
-    function map_tweets(tweets){
-        console.log(tweets);
-        for (var i = 0; i < tweets.length; i++) {
-            map.addMarker({
-                lat: tweets[i].fields['lat'],
-                lng: tweets[i].fields['lon'],
-                title: tweets[i].fields['tweetId']
-            });
-        };
-    };
 
     function drawMarkersMap(frequencies){
-        var tabledata = [['Province',   'Population']];
+        var tabledata = [['Province', 'Percentage', 'Infected']];
         for (var i = 0; i < frequencies.length; i++){
             if(frequencies[i]['province'] ==  "NCR")
-                tabledata.push(["National Capital Region", frequencies[i]['infected']])
+                tabledata.push(["National Capital Region", frequencies[i]['percentage'], frequencies[i]['infected']])
             else
-                tabledata.push([frequencies[i]['province'], frequencies[i]['infected']])
+                tabledata.push([frequencies[i]['province'], frequencies[i]['percentage'], frequencies[i]['infected']])
         }
         var data = google.visualization.arrayToDataTable(tabledata);
         var options = {
@@ -46,12 +35,36 @@ $(document).ready(function(){
         chart.draw(data, options);
     }
 
+    function get_frequency(word, days){
+        var jqxhr = $.get('/homepage/get_tweet_frequency/', {'keyword' : word, 'count' : days}, function(data){
+            frequencies = data;
+        }, "json")
+        .done(function() {
+            console.log('success!');
+            console.log(frequencies);
+            drawMarkersMap(frequencies);
+        })
+    }
+
     function predict(){
         $("#predict-button").click(function(){
             console.log("predict button clicked");
             var word = $('#search-field').val();
-            get_frequency(word);    
+            var days = parseInt($('.days-choices').val());
+            get_frequency(word, days);
+            $("#view-stats-div").show();
         });
+    };
+
+    function map_tweets(tweets){
+        console.log(tweets);
+        for (var i = 0; i < tweets.length; i++) {
+            map.addMarker({
+                lat: tweets[i].fields['lat'],
+                lng: tweets[i].fields['lon'],
+                title: tweets[i].fields['tweetId']
+            });
+        };
     };
 
     function get_tweets(word){
@@ -68,20 +81,8 @@ $(document).ready(function(){
 	$("#search-button").click(function(){
 		console.log("form submitted");
         var word = $('#search-field').val();
-        var days = $('.days-choices').val();
-        get_tweets(word, days);
+        get_tweets(word);
 	});
-
-    function get_frequency(word, days){
-        var jqxhr = $.get('/homepage/get_tweet_frequency/', {'keyword': word}, function(data){
-            frequencies = data;
-        }, "json")
-        .done(function() {
-            console.log('success!');
-            console.log(frequencies);
-            drawMarkersMap(frequencies);
-        })
-    }
 
     google.setOnLoadCallback(predict);
 });

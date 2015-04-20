@@ -32,10 +32,10 @@ body > .container-fluid{
 	background-color: #ECF0F1;
 }
 
-.days-choices{
-	width : 90px;
+.days-choices, .stats-choices{
+	width : 120px;
 	height: 45px;
-	font-size: 24px;
+	font-size: 20px;
 	float: left;
 }
 
@@ -45,6 +45,10 @@ body > .container-fluid{
 
 #prediction-option-div{
 	display: none;
+}
+
+#view-stats-div{
+	display : none;
 }
 
 body{

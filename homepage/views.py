@@ -211,13 +211,14 @@ def sir_model(item, population, keyword):
 	# internet users in ph = 37602976
 	# active twitter users = 40%
 	twitterPopulation = 37602976 * 0.4
+	phPopulation = 92337852
 	# transmitivity rate
 	alpha = 1/2
 	# recovery rate
 	beta = 1/7
 	compute_alpha(keyword, item['province'])
 
-	initialInfected = round((item['frequency'] * population)/twitterPopulation)
+	initialInfected = round((item['frequency'] * population)/(twitterPopulation * (population/phPopulation)))
 	initialSusceptible = population - initialInfected
 	initialRecovered = 0
 
@@ -234,10 +235,11 @@ def sir_model(item, population, keyword):
 	recovered2 = initialRecovered + (dr * population)
 
 	# convert province to lat lang
-	g = geocoder.google(item['province'])
-	item['lat'] = g.lat
-	item['lon'] = g.lng
+	# g = geocoder.google(item['province'])
+	# item['lat'] = g.lat
+	# item['lon'] = g.lng
 	item['susceptible']  = susceptible2
 	item['infected'] = infected2
-	item['recovered'] = recovered2 
+	item['recovered'] = recovered2
+	item['percentage'] = item['infected']/population
 	return item
