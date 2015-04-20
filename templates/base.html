@@ -9,7 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
 	<link href="{% static "css/bootstrap-flat.min.css" %}" rel="stylesheet">
-	<link href="{% static "css/homepage.css" %}" rel="stylesheet">
+	<link href="{% static "css/base.css" %}" rel="stylesheet">
+    {% block css_block %} {% endblock %}
 </head>
 <body>
     <div class="container-fluid">
@@ -29,15 +30,7 @@
     			{% block side_block %} {% endblock %} 
     		</div>
 			<div class="col-md-9">
-                <div id="search-div" class="row">
-                    {% block search_block %}{% endblock %}
-                </div>
-                <div id="geomap-div" class="row">
-                    {% block geomap_block %}{% endblock %}
-                </div>
-                <div id="geochart-div" class="row">
-                    {% block geochart_block %}{% endblock %}
-                </div>
+                {% block main_block %}{% endblock %}
 			</div>
     	</div>
     <div>

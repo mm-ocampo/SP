@@ -2,8 +2,8 @@ google.load('visualization', '1', {'packages': ['geochart']});
 $(document).ready(function(){
 	var map = new GMaps({
       	div: '#map-canvas',
-        lat: 14.5833,
-        lng: 120.9667,
+        lat: 12.5833,
+        lng: 121.9667,
         width: '700px',
         height: '700px',
         zoom: 6,
@@ -50,7 +50,7 @@ $(document).ready(function(){
         $("#predict-button").click(function(){
             console.log("predict button clicked");
             var word = $('#search-field').val();
-            var days = parseInt($('.days-choices').val());
+            var days = parseInt($('#days-choices').val());
             get_frequency(word, days);
             $("#view-stats-div").show();
         });

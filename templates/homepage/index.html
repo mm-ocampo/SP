@@ -6,6 +6,10 @@
     Home
 {% endblock %}
 
+{% block css_block %}
+    <link href="{% static "css/index.css" %}" rel="stylesheet">
+{% endblock %}
+
 {% block side_block %}
     <!-- collapse for trending topics -->
     <div class="panel-group" id="trending-div">
@@ -54,7 +58,7 @@
     <!-- end collapse for most searched diseases -->
 {% endblock %}
 
-{% block search_block %}
+{% block main_block %}
     <!-- div for search -->
     <div id="search-div">
         <h1>Search Keyword</h1>
@@ -62,50 +66,60 @@
         <button id="search-button" class="btn btn-success btn-lg">Search</button>
     </div>
     <!-- end div for search -->
-{% endblock %}
 
-{% block geomap_block %}
-    <div class="map-class">
-        <!-- <h1>Tweet Map</h1> -->
-        <div id="map-canvas">
+    <!-- div for geomap -->
+    <div id="geomap-div" class="row">
+        <div class="map-class">
+            <!-- <h1>Tweet Map</h1> -->
+            <div id="map-canvas">
+            </div>
+        </div>
+        <div id="prediction-option-div">
+            <div id="days-selector">
+                <select id="days-choices">
+                    <option value=1>1 day</option>
+                    <option value=2>2 days</option>
+                    <option value=3>3 days</option>
+                    <option value=4>4 days</option>
+                    <option value=5>5 days</option>
+                    <option value=6>6 days</option>
+                    <option value=7>1 week</option>
+                    <option value=14>2 weeks</option>
+                    <option value=21>3 weeks</option>
+                    <option value=28>4 weeks</option>
+                </select>
+            </div>
+            <button id="predict-button" class="btn btn-success btn-lg"> Predict </button>
         </div>
     </div>
-    <div id="prediction-option-div">
-        <div id="days-selector">
-            <select class="days-choices">
-                <option value=1>1 day</option>
-                <option value=2>2 days</option>
-                <option value=3>3 days</option>
-                <option value=4>4 days</option>
-                <option value=5>5 days</option>
-                <option value=6>6 days</option>
-                <option value=7>1 week</option>
-                <option value=14>2 weeks</option>
-                <option value=21>3 weeks</option>
-                <option value=28>4 weeks</option>
-            </select>
-        </div>
-        <button id="predict-button" class="btn btn-success btn-lg"> Predict </button>
-    </div>
-{% endblock %}
+    <!-- end div for geomap -->
 
-{% block geochart_block %}
-    <div class="map-class">
-        <!-- <h1>Propagation Map</h1> -->
-        <div id="geomap-canvas">
+    <!-- div for geochart -->
+    <div id="geochart-div" class="row">
+        <div class="map-class">
+            <!-- <h1>Propagation Map</h1> -->
+            <div id="geomap-canvas">
+            </div>
+        </div>
+        <div id="view-stats-div">
+            <div id="option-selector">
+                <select id="stats-location-choices">
+                    <option>Select Location</option>
+                    <option>Philippines</option>
+                    <option>Region</option>
+                    <option>Province</option>
+                </select>
+                <select id="stats-region-choices">
+                    <option>Select Region</option>
+                </select>
+                <select id="stats-province-choices">
+                    <option>Select Province</option>
+                </select>
+            </div>
+            <button id="view-stats-button" class="btn btn-success btn-lg">View Stats</button>
         </div>
     </div>
-    <div id="view-stats-div">
-        <div id="option-selector">
-            <select class="stats-choices">
-                <option></option>
-                <option>Contry</option>
-                <option>Region</option>
-                <option>Province</option>
-            </select>
-        </div>
-        <button id="view-stats-button" class="btn btn-success btn-lg">View Stats</button>
-    </div>
+    <!-- end div for geochart -->
 {% endblock %}
 
 {% block js_block %}

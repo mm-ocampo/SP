@@ -1,0 +1,56 @@
+@font-face {
+    font-family: myFirstFont;
+    src: url(../fonts/raleway/webfonts/raleway_thin-webfont.woff);
+}
+
+body > .container-fluid{
+	width: 100%;
+	/*height: 85%;*/
+	top: 10%;
+}
+
+#top-banner{
+	padding: 20px 20px;
+	height: 275px;
+	background-color: #d2222c;
+	color: #BDC3C7;
+	font-family: myFirstFont;
+}
+
+#nav-div{
+	height: 50px;
+	background-color: #413d3d;
+}
+
+#site-title{
+	font-size: 16px;
+	color: #ECF0F1;
+}
+
+#body-main{
+	padding: 30px 30px;
+	background-color: #ECF0F1;
+}
+
+body{
+	/*background-color: #212121;*/
+	font-family: sans-serif;
+}
+
+
+.panel-primary-custom{
+	border-color: #d2222c;
+}
+
+.panel-primary > .panel-heading-custom {
+    background: #d2222c;
+    border-color: #d2222c;
+}
+
+.panel-primary :hover {
+    background: #413d3d;
+}
+
+#mostsearched-div{
+	margin-top: -20px;
+}
