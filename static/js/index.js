@@ -81,6 +81,7 @@ $(document).ready(function(){
 	$("#search-button").click(function(){
 		console.log("form submitted");
         var word = $('#search-field').val();
+        $("#ph-stats-link").attr('href', "/homepage/country-stats/" + word +"/");
         get_tweets(word);
 	});
 

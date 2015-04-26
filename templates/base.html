@@ -14,20 +14,27 @@
 </head>
 <body>
     <div class="container-fluid">
+        <!-- bannner div -->
         <div id="top-banner" class="row text-center">
             <img src="{% static "images/logo.png" %}"/>
             <h1>Preview. Predict. Prevent.</h1>
             <h3>A site that shows and forecasts the propagation of diseases in the Philippines to save the lives of people.<h3>
         </div>
+        <!-- end banner div -->
+
+        <!-- divider div -->
         <div id="nav-div" class="row">
             <div class="col-md-3 text-center">
                 <img src="{% static "images/logo.png" %}"width=50px height=50px />
                 <span id="site-title">Predemic</span>
             </div>
         </div>
+        <!-- end divider div -->
+
+        <!-- main body div -->
     	<div id="body-main" class="row">
     		<div class="col-md-3">
-                <!-- side block starts here -->
+            <!-- side block starts here -->
                 <!-- collapse for trending topics -->
                 <div class="panel-group" id="trending-div">
                     <div class="panel panel-primary panel-primary-custom">
@@ -73,12 +80,13 @@
                     </div>
                 </div>
                 <!-- end collapse for most searched diseases -->
-                <!-- end of side block -->
+            <!-- end of side block -->
     		</div>
 			<div class="col-md-9">
                 {% block main_block %}{% endblock %}
 			</div>
     	</div>
+        <!-- end main body div -->
     <div>
 	<script src="{% static "js/jquery-1.11.2.min.js" %}"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>

@@ -97,6 +97,7 @@ def get_frequency_per_province(m):
 		frequencyPerProvince.append(temp)
 	return frequencyPerProvince
 
+#ajax for searching tweets
 def search_keyword(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
@@ -133,7 +134,7 @@ def search_keyword(request):
 
 	return HttpResponse(markers, content_type = 'application/json')
 
-
+# ajax for getting prediction data
 def get_tweet_frequency(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
@@ -158,24 +159,11 @@ def get_tweet_frequency(request):
 		# json_data = json.dumps(frequencyPerProvince, cls = DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type = "application/json")
 
-
 def compute_alpha(keyword, province):
 	t = Tweet.objects.filter(province = province).values('date').order_by('-date__count').annotate(Count('date'))
 	alpha = 1
 	array_counter = []
 	i = 6
-	# while i >= 0:
-	# 	temp = date.today() - timedelta(days = i)
-	# 	i -= 1
-	# 	dateFrequency = {}
-	# 	counter = 0
-	# 	for item in t:
-	# 		counter += 1
-	# 		if datetime.date(item['date']) == temp :
-	# 			dateFrequency[counter] = item['date__count']
-	# 			break
-	# 		else :
-	# 			dateFrequency[counter] = 0
 	counter = 1
 	while i >= 0:
 		temp = date.today() - timedelta(days = i)
@@ -195,7 +183,6 @@ def compute_alpha(keyword, province):
 			dateFrequency.append(0)
 		array_counter.append(dateFrequency)
 		counter += 1
-	print(array_counter)
 	return alpha
 
 def get_ds(alpha, s, i):
@@ -241,3 +228,53 @@ def sir_model(item, population, keyword, daysCount):
 	item['recovered'] = r1
 	item['percentage'] = item['infected']/population
 	return item
+
+# get grequency per day for country stats
+def frequency_per_day(t):
+	t = t.values('date').order_by('-date__count').annotate(Count('date'))
+	array_counter = []
+	i = 6
+	while i >= 0:
+		array_object = {}
+		temp = date.today() - timedelta(days = i)
+		i -= 1
+		flag = 0
+		freq = 0
+		for item in t:
+			if datetime.date(item['date']) == temp :
+				freq = item['date__count']
+				break
+		array_object['date'] = temp
+		array_object['frequency'] = freq
+		array_counter.append(array_object)
+	return array_counter
+
+# ajax get country stats
+def get_country_stats(request):
+	if request.method == 'GET':
+		tweetFrequency = []
+		keyword = fix_text(request.GET['keyword'])
+		end_date = datetime.date(datetime.now())
+		start_date = end_date - timedelta(days = 6)
+		m = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date))
+		
+		if m:
+			tweetFrequency = frequency_per_day(m)
+		json_data = json.dumps(list(tweetFrequency), cls = DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type = "application/json")
+
+# main controller for country stats
+def country_stats(request, keyword):
+	keyword = fix_text(keyword)
+	context_dict = {'keyword' : keyword}
+	return render(request, 'homepage/country.html', context_dict)
+
+# main controller for region stats
+def region_stats(request, keyword, region):
+	context_dict = {'region' : region}
+	return render(request, 'homepage/region.html', context_dict)
+
+# main controller for province stats
+def province_stats(request, keyword, province):
+	context_dict = {'province' : province}
+	return render(request, 'homepage/province.html', context_dict)	

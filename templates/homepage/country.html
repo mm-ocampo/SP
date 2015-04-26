@@ -6,5 +6,21 @@
     Philippine Statistics
 {% endblock %}
 
+{% block  main_block%}
+	<div id="title-div">
+		<h1>Philippine Statistics for <span id="keyword-span">{{ keyword }}</span></h1>
+	</div>
+	<div id="result-div">
+		{{ dailyFrequency }}
+	</div>
+
+	<div id="country-chart-div">
+	</div>
+{% endblock %}
+
 {% block css_block %}
+{% endblock %}
+
+{% block js_block %}
+	<script src="{% static "js/country.js" %}"></script>
 {% endblock %}
