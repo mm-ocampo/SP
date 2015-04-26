@@ -75,6 +75,7 @@ $(document).ready(function(){
             console.log('success!');
             map_tweets(tweets);
             $("#prediction-option-div").show();
+            $("#stats-province-choices").hide();
         })
     }
 
@@ -84,6 +85,35 @@ $(document).ready(function(){
         $("#ph-stats-link").attr('href', "/homepage/country-stats/" + word +"/");
         get_tweets(word);
 	});
+
+    $("#province-stats-button").click(function(){
+        $("#country-stats-button").hide();
+        $("#region-stats-button").hide();
+        $("#stats-province-choices").show();
+        for (var i = 0; i < frequencies.length; i++) {
+            var str = frequencies[i]['province'].toLowerCase();
+            /*$("#stats-province-choices").append("<option><a href='/homepage/province-stats/"+ str + "/>" + $('#search-field').val() + "/'>" + frequencies[i]['province'] + "</a></option>");*/
+            $("#stats-province-choices").append("<option value='/homepage/province-stats/"+ str + "/" + $('#search-field').val() +"/'>" + frequencies[i]['province'] + "</option>");
+        };   
+    });
+
+    $("#region-stats-button").click(function(){
+        $("#country-stats-button").hide();
+        $("#province-stats-button").hide();
+        $("#stats-region-choices").show();
+        var jqxhr = $.get('/homepage/get_regions/', {keyword: $('#search-field').val()}, function(data){
+            regions = data;
+        })
+        .done(function() {
+            console.log('success!');
+            console.log(regions);
+            for (var i = 0; i < regions.length; i++) {
+                var str = regions[i]['region'].toLowerCase();
+                /*$("#stats-province-choices").append("<option><a href='/homepage/province-stats/"+ str + "/>" + $('#search-field').val() + "/'>" + frequencies[i]['province'] + "</a></option>");*/
+                $("#stats-region-choices").append("<option value='/homepage/region-stats/"+ str + "/" + $('#search-field').val() +"/'>" + regions[i]['region'] + "</option>");
+            };
+        })
+    });
 
     google.setOnLoadCallback(predict);
 });

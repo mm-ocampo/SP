@@ -7,7 +7,17 @@
 {% endblock %}
 
 {% block  main_block%}
+	<div id="title-div">
+		<h1>Statistics for <span id="keyword-span">{{ keyword }}</span> in <span id="province-span">{{ province }}</span></h1>
+	</div>
+
+	<div id="province-chart-div">
+	</div>
 {% endblock %}
 
 {% block css_block %}
+{% endblock %}
+
+{% block js_block %}
+	<script src="{% static "js/province.js" %}"></script>
 {% endblock %}

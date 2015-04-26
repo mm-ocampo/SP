@@ -69,7 +69,15 @@
                 </select>
             </div>
             <button id="view-stats-button" class="btn btn-success btn-lg">View Stats</button> -->
-            <button class="btn btn-success btn-lg"><a id="ph-stats-link" href="#">PH</button>
+            <button id="country-stats-button" class="btn btn-success btn-lg"><a id="ph-stats-link" href="#">PH</button>
+            <button id="province-stats-button" class="btn btn-success btn-lg">Province</button>
+            <select id="stats-province-choices" onchange="location = this.options[this.selectedIndex].value;">
+                <option>Select Province</option>
+            </select>
+            <button id="region-stats-button" class="btn btn-success btn-lg">Region</button>
+            <select id="stats-region-choices" onchange="location = this.options[this.selectedIndex].value;">
+                <option>Select Region</option>
+            </select>
         </div>
     </div>
     <!-- end div for geochart -->
