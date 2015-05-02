@@ -28,6 +28,7 @@ $(document).ready(function(){
             region: 'PH',
             displayMode: 'markers',
             backgroundColor: '#B2D0FE',
+            width: '800px',
             colorAxis: {colors: ['green', 'red']}
         }
 
@@ -52,6 +53,10 @@ $(document).ready(function(){
             var word = $('#search-field').val();
             var days = parseInt($('#days-choices').val());
             get_frequency(word, days);
+            $("#geochart-div").show();
+            $('html,body').animate({
+                scrollTop: $("#geochart-div").offset().top},
+                'slow');
             $("#view-stats-div").show();
         });
     };
@@ -84,6 +89,9 @@ $(document).ready(function(){
         var word = $('#search-field').val();
         $("#ph-stats-link").attr('href', "/homepage/country-stats/" + word +"/");
         get_tweets(word);
+        $("#search-div").hide();
+        $(".keyword-span").text(word);
+        $("#keyword-div").show();
 	});
 
     $("#province-stats-button").click(function(){

@@ -12,7 +12,7 @@ body > .container-fluid{
 #top-banner{
 	padding: 20px 20px;
 	height: 275px;
-	background-color: #d2222c;
+	background-color: #D32F2F;
 	color: #BDC3C7;
 	font-family: myFirstFont;
 }
@@ -38,16 +38,16 @@ body{
 }
 
 
-.panel-primary-custom{
-	border-color: #d2222c;
+#mostsearched-div .panel-primary-custom, #trending-div .panel-primary-custom{
+	border-color: #D32F2F;
 }
 
-.panel-primary > .panel-heading-custom {
-    background: #d2222c;
-    border-color: #d2222c;
+#trending-div .panel-primary > .panel-heading-custom, #mostsearched-div .panel-primary > .panel-heading-custom{
+    background: #D32F2F;
+    border-color: #D32F2F;
 }
 
-.panel-primary :hover {
+#trending-div .panel-primary :hover, #mostsearched-div .panel-primary :hover {
     background: #413d3d;
 }
 

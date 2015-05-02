@@ -170,8 +170,52 @@ def get_tweet_frequency(request):
 		# json_data = json.dumps(frequencyPerProvince, cls = DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type = "application/json")
 
+def get_sum_of_x(array_counter):
+	total = 0
+	for item in array_counter:
+		total += item['x']
+	return total
+
+def get_sum_of_y(array_counter):
+	total = 0
+	for item in array_counter:
+		total += item['y']
+	return total
+
+def get_sum_of_square_of_x(array_counter):
+	total = 0
+	for item in array_counter:
+		total += item['x'] * item['x']
+	return total
+
+def get_sum_of_xy(array_counter):
+	total = 0
+	for item in array_counter:
+		total += item['x'] * item['y']
+	return total	
+
 def compute_alpha(keyword, province):
 	alpha = 1
+	end_date = datetime.date(datetime.now())
+	start_date = end_date - timedelta(days = 7)
+	m = Tweet.objects.filter(keyword = keyword, province = province, date__range=(start_date, end_date))
+	array_counter = []
+	i = 7
+	counter = 1
+	while i >= 0:
+		array_object = {}
+		temp = date.today() - timedelta(days = i)
+		i -= 1
+		array_object['x'] = counter
+		array_object['y'] = len(m.filter(date = temp))
+		array_counter.append(array_object)
+		counter += 1
+	N = len(array_counter)
+	sum_of_xy = get_sum_of_xy(array_counter)
+	sum_of_x = get_sum_of_x(array_counter)
+	sum_of_y = get_sum_of_y(array_counter)
+	sum_of_square_of_x = get_sum_of_square_of_x(array_counter)
+	alpha = ((N * sum_of_xy) - (sum_of_x - sum_of_y)) / ((N * sum_of_square_of_x) - (sum_of_x * sum_of_x))
 	return alpha
 
 def get_ds(alpha, s, i):
@@ -190,12 +234,14 @@ def sir_model(item, population, keyword, daysCount):
 	twitterPopulation = 37602976 * 0.4
 	phPopulation = 92337852
 	# transmitivity rate
-	alpha = 1/2
+	alpha = compute_alpha(keyword, item['province'])
 	# recovery rate
 	beta = 1/7
-	compute_alpha(keyword, item['province'])
 
-	i1 = round((item['frequency'] * population)/(twitterPopulation * (population/phPopulation)))
+	m = Tweet.objects.filter(keyword = keyword, province = item['province'], date = date.today())
+	print(len(m))
+	# i1 = round((item['frequency'] * population)/(twitterPopulation * (population/phPopulation)))
+	i1 = round((len(m) * population)/(twitterPopulation * (population/phPopulation)))
 	s1 = population - i1
 	r1 = 0
 	daysCount = int(daysCount)
@@ -268,6 +314,7 @@ def country_stats(request, keyword):
 	context_dict = {'keyword' : keyword, 'topSearch': topSearch, 'trending': trending}
 	return render(request, 'homepage/country.html', context_dict)
 
+# ajax get all regions that tweet about the keyword
 def get_regions(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
@@ -278,6 +325,25 @@ def get_regions(request):
 	json_data = json.dumps(list(t), cls = DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type = "application/json")	
 
+# ajax for getting the daily tweet in a region 
+def daily_region_stats(request):
+	array_counter = []
+	if request.method == 'GET':
+		keyword = fix_text(request.GET['keyword'])
+		region = fix_text(request.GET['region'])
+		end_date = datetime.date(datetime.now())
+		start_date = end_date - timedelta(days = 7)
+		m = Tweet.objects.filter(region = region, keyword = keyword, date__range=(start_date, end_date))
+		i = 7
+		while i >= 0:
+			temp = date.today() - timedelta(days = i)
+			i -= 1
+			dateFrequency = {}
+			dateFrequency['date'] = temp
+			dateFrequency['frequency'] = len(m.filter(date = temp))
+			array_counter.append(dateFrequency)
+	json_data = json.dumps(list(array_counter), cls = DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type = "application/json")
 
 # main controller for region stats
 def region_stats(request, keyword, region):
@@ -286,6 +352,7 @@ def region_stats(request, keyword, region):
 	context_dict = {'region' : region, 'keyword' : keyword, 'topSearch': topSearch, 'trending': trending}
 	return render(request, 'homepage/region.html', context_dict)
 
+# ajax for getting daily tweets per province
 def daily_province_stats(request):
 	array_counter = []
 	if request.method == 'GET':
@@ -293,12 +360,8 @@ def daily_province_stats(request):
 		province = fix_text(request.GET['province'])
 		end_date = datetime.date(datetime.now())
 		start_date = end_date - timedelta(days = 7)
-		print(keyword, province)
 		m = Tweet.objects.filter(province = province, keyword = keyword, date__range=(start_date, end_date))
-		# t = m.values('date').order_by('-date__count').annotate(Count('date'))
-		print(m)
 		i = 7
-		counter = 1
 		while i >= 0:
 			temp = date.today() - timedelta(days = i)
 			i -= 1

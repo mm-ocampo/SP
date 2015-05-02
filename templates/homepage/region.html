@@ -11,10 +11,48 @@
 		<h1>Statistics for <span id="keyword-span">{{ keyword }}</span> in <span id="region-span">{{ region }}</span></h1>
 	</div>
 
+	<div id="stats-div" class="container-fluid">
+		<div class="row">
+			<div id="tweet-number-div" class="col-xs-6 col-md-3">
+				<div class="panel panel-primary">
+					<div id="tweet-count" class="panel-heading">
+					</div>
+					<div class="panel-body">
+						Tweets
+					</div>
+				</div>
+			</div>
+			<div id="date-div" class="col-xs-6 col-md-3">
+				<div class="panel panel-danger">
+					<div id="date-range" class="panel-heading">
+					</div>
+					<div class="panel-body">
+						Date Range
+					</div>
+				</div>
+			</div>
+			<div id="rate1-div" class="col-xs-6 col-md-3">
+				<div class="panel panel-success">
+					<div id="day-rate" class="panel-heading">
+					</div>
+					<div class="panel-body">
+						Tweet Rate
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="region-chart-div">
+	</div>
+
+
+
 {% endblock %}
 
 {% block css_block %}
 {% endblock %}
 
 {% block js_block %}
+	<script src="{% static "js/region.js" %}"></script>
 {% endblock %}

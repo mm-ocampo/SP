@@ -13,20 +13,22 @@
 {% block main_block %}
     <!-- div for search -->
     <div id="search-div">
-        <h1>Search Keyword</h1>
-        <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
-        <button id="search-button" class="btn btn-success btn-lg">Search</button>
+        <div class="search-div-wrapper">
+            <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
+            <button id="search-button" class="btn btn-success btn-lg">Search</button>
+        </div>
     </div>
     <!-- end div for search -->
 
-    <!-- div for geomap -->
-    <div id="geomap-div" class="row">
-        <div class="map-class">
-            <!-- <h1>Tweet Map</h1> -->
-            <div id="map-canvas">
-            </div>
-        </div>
-        <div id="prediction-option-div">
+    <!-- keyword div -->
+    <div id="keyword-div">
+        <h1 class="text-center">Result for keyword <span class="keyword-span"></span></h1>
+    </div>
+    <!-- end for keyword div -->
+
+    <!-- prediction div -->
+    <div id="prediction-option-div" class="text-center">
+        <div class="div-wrapper">
             <div id="days-selector">
                 <select id="days-choices">
                     <option value=1>1 day</option>
@@ -41,35 +43,46 @@
                     <option value=28>4 weeks</option>
                 </select>
             </div>
-            <button id="predict-button" class="btn btn-success btn-lg"> Predict </button>
+        <button id="predict-button" class="btn btn-success btn-lg"> Predict </button>
+        </div>
+    </div>
+    <!-- end of prediction div -->
+
+    <!-- div for geomap -->
+    <div id="geomap-div" class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">Tweet Map</h3>
+            </div>
+            <div class="panel-body">
+                <!-- <h1>Tweet Map</h1> -->
+                <div id="map-canvas">
+                </div>
+            </div>
         </div>
     </div>
     <!-- end div for geomap -->
 
     <!-- div for geochart -->
     <div id="geochart-div" class="row">
-        <div class="map-class">
-            <!-- <h1>Propagation Map</h1> -->
-            <div id="geomap-canvas">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">Propagation Map</h3>
+            </div>
+            <div class="panel-body">
+                <!-- <h1>Propagation Map</h1> -->
+                <div id="geomap-canvas">
+                </div>
             </div>
         </div>
-        <div id="view-stats-div">
-            <!-- <div id="option-selector">
-                <select id="stats-location-choices">
-                    <option>Select Location</option>
-                    <option>Philippines</option>
-                    <option>Region</option>
-                    <option>Province</option>
-                </select>
-                <select id="stats-region-choices">
-                    <option>Select Region</option>
-                </select>
-                <select id="stats-province-choices">
-                    <option>Select Province</option>
-                </select>
-            </div>
-            <button id="view-stats-button" class="btn btn-success btn-lg">View Stats</button> -->
-            <button id="country-stats-button" class="btn btn-success btn-lg"><a id="ph-stats-link" href="#">PH</button>
+    </div>
+    <!-- end div for geochart -->
+
+    <!-- stats div -->
+    <div id="view-stats-div"><span > 
+        <h1 class="text-center">View Statistics for <span class="keyword-span"></span></h1>
+        <div id="button-div">
+            <button id="country-stats-button" class="btn btn-success btn-lg"><a id="ph-stats-link" href="#">PH</a></button>
             <button id="province-stats-button" class="btn btn-success btn-lg">Province</button>
             <select id="stats-province-choices" onchange="location = this.options[this.selectedIndex].value;">
                 <option>Select Province</option>
@@ -80,7 +93,8 @@
             </select>
         </div>
     </div>
-    <!-- end div for geochart -->
+    <!-- end stats div -->
+
 {% endblock %}
 
 {% block js_block %}
