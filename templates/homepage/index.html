@@ -13,7 +13,7 @@
 {% block main_block %}
     <!-- div for search -->
     <div id="search-div">
-        <div class="search-div-wrapper">
+        <div id="search-div-wrapper">
             <input class="form-control input-lg" id="search-field" type="text" placeholder="Input Keyword"/>
             <button id="search-button" class="btn btn-success btn-lg">Search</button>
         </div>
@@ -82,7 +82,7 @@
     <div id="view-stats-div"><span > 
         <h1 class="text-center">View Statistics for <span class="keyword-span"></span></h1>
         <div id="button-div">
-            <button id="country-stats-button" class="btn btn-success btn-lg"><a id="ph-stats-link" href="#">PH</a></button>
+            <button id="country-stats-button" class="btn btn-success btn-lg"><a id="ph-stats-link" href="#">Philippines</a></button>
             <button id="province-stats-button" class="btn btn-success btn-lg">Province</button>
             <select id="stats-province-choices" onchange="location = this.options[this.selectedIndex].value;">
                 <option>Select Province</option>

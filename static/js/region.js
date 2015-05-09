@@ -11,8 +11,8 @@ google.setOnLoadCallback(show_stats);
       var rows = [];
       var totalTweets = 0;
       var startDate = freq_per_day[0]['date'];
-      var endDate = freq_per_day[freq_per_day.length -1]['date'];
-      for (var i = 0; i < freq_per_day.length; i++) {
+      var endDate = freq_per_day[freq_per_day.length -2]['date'];
+      for (var i = 0; i < freq_per_day.length -1; i++) {
         var temp = [];
         temp.push(freq_per_day[i]['date']);
         temp.push(freq_per_day[i]['frequency']);
@@ -20,14 +20,28 @@ google.setOnLoadCallback(show_stats);
         rows.push(temp);
       };
 
-      var dayIncrease = ((freq_per_day[freq_per_day.length -1]['frequency'] - freq_per_day[freq_per_day.length -2]['frequency'])/freq_per_day[freq_per_day.length -2]['frequency']) * 100;
-      var weekIncrease = 
-      $("#tweet-count").text(totalTweets);
-      $("#date-range").text(startDate + " - " + endDate);
-      if(dayIncrease > 0) var str = "increase";
-      else var str = "decrease";
-      $("#day-rate").text(Math.abs(dayIncrease).toFixed(2) + " " + str);
-
+      var dayIncrease = ((freq_per_day[freq_per_day.length -2]['frequency'] - freq_per_day[freq_per_day.length -3]['frequency'])/freq_per_day[freq_per_day.length -3]['frequency']) * 100;
+      $("#tweet-count-span").text(totalTweets);
+      $("#tweet-number-div div").first().append("<span class='glyphicon glyphicon-retweet'></span>");
+      var str = '';
+      if(dayIncrease >= 0){
+        str = "<span class='glyphicon glyphicon-arrow-up'></span>";
+      }
+      else{
+        str = "<span class='glyphicon glyphicon-arrow-down'></span>";
+      }
+      $("#day-rate-span").text(Math.abs(dayIncrease).toFixed(2));
+      $("#day-rate-div div").first().append(str);
+      var weekIncrease = ((freq_per_day[freq_per_day.length -2]['frequency'] - freq_per_day[0]['frequency'])/freq_per_day[0]['frequency']) * 100;
+      if(weekIncrease >= 0){
+        str = "<span class='glyphicon glyphicon-arrow-up'></span>";
+      }
+      else{
+        str = "<span class='glyphicon glyphicon-arrow-down'></span>";
+      }
+      $("#week-rate-span").text(Math.abs(dayIncrease).toFixed(2));
+      $("#weekly-rate-div div").first().append(str);
+      $("#rank-span").text(freq_per_day[freq_per_day.length - 1]['rank'])
       data.addRows(rows);
 
       var options = {
@@ -42,7 +56,7 @@ google.setOnLoadCallback(show_stats);
       var chart = new google.charts.Line(document.getElementById('region-chart-div'));
 
       chart.draw(data, options);
-
+      $("#loader-wrapper").fadeOut();
   }
 
   function show_stats(){

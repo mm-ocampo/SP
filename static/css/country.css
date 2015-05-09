@@ -1,0 +1,68 @@
+#keyword-span{
+	color: #D32F2F;
+}
+
+#country-bubble-div{
+	width: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+#country-chart-div{
+	width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;	
+}
+
+.divider{
+	height: 100px;
+	background-color: #212121;
+	font-size: 40px;
+}
+
+.stats{
+	height: 200px;
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+
+#tweet-number-div{
+	color: #E64A19;
+}
+
+#day-rate-div{
+	color: #1976D2;
+}
+
+#weekly-rate-div{
+	color: #388E3C;
+}
+
+.div-title{
+	width: 100%;
+	height: 50px;
+	color: #212121;
+	margin-top: -10px;
+}
+
+.div-title h6{
+	padding-top: 10px; 
+	font-size: 20px;
+}
+
+.tweet{
+	background-color: #FF5722;
+}
+
+.day{
+	background-color: #448AFF;
+}
+
+.week{
+	background-color: #4CAF50;
+}
+

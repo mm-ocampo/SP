@@ -8,17 +8,59 @@
 
 {% block  main_block%}
 	<div id="title-div">
-		<h1>Philippine Statistics for <span id="keyword-span">{{ keyword }}</span></h1>
+		<h1 class="text-center">Philippine Statistics for <span id="keyword-span">{{ keyword }}</span></h1>
 	</div>
 
-	<div id="country-chart-div">
+	<div class="row stats">
+		<div id="tweet-number-div" class="col-md-4">
+			<div class="divider">
+				<span id="tweet-count-span"></span>
+			</div>
+			<div class="div-title tweet">
+				<h6 class="text-center">Tweet Count</h6>
+			</div>
+		</div>
+		<div id="day-rate-div" class="col-md-4">
+			<div class="divider">
+				<span id="day-rate-span"></span>
+			</div>
+			<div class="div-title day">
+				<h6 class="text-center">Day Rate</h6>
+			</div>
+		</div>
+		<div id="weekly-rate-div" class="col-md-4">
+			<div class="divider">
+				<span id="week-rate-span"></span>
+			</div>
+			<div class="div-title week">
+				<h6 class="text-center">Week Rate</h6>
+			</div>
+		</div>
 	</div>
 
-	<div id="country-bubble-div">
-	</div>
+	<div class="panel panel-default">
+        <div class="panel-heading test">
+            <h3 class="panel-title text-center">{{ keyword }} in the Philippines</h3>
+        </div>
+        <div class="panel-body">
+            <div id="country-chart-div">
+			</div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center">{{ keyword }} in Provinces</h3>
+        </div>
+        <div class="panel-body">
+			<div id="country-bubble-div">
+			</div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block css_block %}
+	<link href="{% static "css/country.css" %}" rel="stylesheet">
 {% endblock %}
 
 {% block js_block %}

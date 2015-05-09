@@ -16,6 +16,7 @@
 
 #view-stats-div{
 	display : none;
+	height: 100px;
 }
 
 #search-field{
@@ -28,7 +29,10 @@
 }
 
 #map-canvas{
-	margin: 30px 30px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
 	border-style: solid;
 }
 
@@ -39,8 +43,8 @@
 #search-button{
 	background-color: #D32F2F;
 	border-color: #D32F2F;
-	width: 15%;
-	height: 65px;
+	width: 25%;
+	height: 55px;
 	font-size: 20px;
 }
 
@@ -48,13 +52,20 @@
 	background-color: #413d3d;
 	color: #f5f5f5;
 	border-style: none;
-	width: 65%;
-	height: 65px;
-	font-size: 38px;
+	width: 75%;
+	height: 55px;
+	font-size: 28px;
 }
 
 #search-field:focus{
 	outline-color: transparent;
+}
+
+#search-div-wrapper{
+	width: 70%;
+	height: 60px;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 #map-class{
@@ -66,6 +77,8 @@
 
 #stats-region-choices, #stats-province-choices{
 	display: none;
+	height: 60px;
+	font-size: 16px;
 }
 
 #keyword-div{
@@ -88,18 +101,17 @@
 	margin-top: 20px;
 	height: 800px;
 	width: 100%;
-	background-color: black;
 }
 
 #geochart-div{
 	display: none;
 	margin-top: 50px;
-	height: 550px;
+	height: 630px;
 	width: 100%;
 }
 
 #button-div{
-	width: 35%;
+	width: 40%;
 	height: 100px;
 	margin-right: auto;
 	margin-left: auto;
@@ -108,14 +120,28 @@
 #country-stats-button{
 	background-color: #1976D2;
 	border-color: #1976D2;
+	height: 60px;
+	font-size: 20px;
 }
+
+#country-stats-button a{
+	color: inherit;
+}
+
 
 #province-stats-button{
 	background-color: #E64A19;
 	border-color: #E64A19;
+	height: 60px;
+	font-size: 20px;
 }
 
 #region-stats-button{
 	background-color: #388E3C;
 	border-color: #388E3C;
+	height: 60px;
+	font-size: 20px;
 }
+
+
+

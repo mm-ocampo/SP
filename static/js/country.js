@@ -8,13 +8,36 @@ google.setOnLoadCallback(show_stats);
       data.addColumn('number', 'Frequency');
 
       var rows = [];
+      var total = 0;
       for (var i = 0; i < freq_per_day.length; i++) {
         var temp = [];
         temp.push(freq_per_day[i]['date']);
         temp.push(freq_per_day[i]['frequency']);
         rows.push(temp);
+        total += freq_per_day[i]['frequency'];
       };
 
+      $("#tweet-count-span").text(total);
+      $("#tweet-number-div div").first().append("<span class='glyphicon glyphicon-retweet'></span>");
+      var dayIncrease = ((freq_per_day[freq_per_day.length -1]['frequency'] - freq_per_day[freq_per_day.length -2]['frequency'])/freq_per_day[freq_per_day.length -2]['frequency']) * 100;
+      var str = '';
+      if(dayIncrease >= 0){
+        str = "<span class='glyphicon glyphicon-arrow-up'></span>";
+      }
+      else{
+        str = "<span class='glyphicon glyphicon-arrow-down'></span>";
+      }
+      $("#day-rate-span").text(Math.abs(dayIncrease).toFixed(2));
+      $("#day-rate-div div").first().append(str);
+      var weekIncrease = ((freq_per_day[freq_per_day.length -1]['frequency'] - freq_per_day[0]['frequency'])/freq_per_day[0]['frequency']) * 100;
+      if(weekIncrease >= 0){
+        str = "<span class='glyphicon glyphicon-arrow-up'></span>";
+      }
+      else{
+        str = "<span class='glyphicon glyphicon-arrow-down'></span>";
+      }
+      $("#week-rate-span").text(Math.abs(dayIncrease).toFixed(2));
+      $("#weekly-rate-div div").first().append(str);
       data.addRows(rows);
 
       var options = {
@@ -46,27 +69,26 @@ google.setOnLoadCallback(show_stats);
 
   function drawBubbleChart(freq_per_province){
     var rows = [];
-    rows.push(['Province', 'Population', 'Frequency']);
+    rows.push(['Province', 'Frequency']);
     for (var i = 0; i < freq_per_province.length; i++) {
       var temp = [];
       temp.push(freq_per_province[i]['province']);
-      temp.push(freq_per_province[i]['population']);
+      /*temp.push(freq_per_province[i]['population']);*/
       temp.push(freq_per_province[i]['frequency']);
       rows.push(temp);
     };
     var data2 = google.visualization.arrayToDataTable(rows);
 
     var options2 = {
-      title: 'Correlation between life expectancy, fertility rate and population of some world countries (2010)',
-      hAxis: {title: 'Population'},
-      vAxis: {title: 'Frequency'},
-      bubble: {textStyle: {fontSize: 11}},
+      title: 'Frequencies of Provinces',
       width: 800,
       height: 500,
+      
     };
 
-    var chart2 = new google.visualization.BubbleChart(document.getElementById('country-bubble-div'));
+    var chart2 = new google.visualization.ColumnChart(document.getElementById('country-bubble-div'));
     chart2.draw(data2, options2);
+    $("#loader-wrapper").fadeOut();
   }
 
   function show_per_province(){

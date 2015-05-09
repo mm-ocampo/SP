@@ -11,46 +11,59 @@
 		<h1>Statistics for <span id="keyword-span">{{ keyword }}</span> in <span id="region-span">{{ region }}</span></h1>
 	</div>
 
-	<div id="stats-div" class="container-fluid">
-		<div class="row">
-			<div id="tweet-number-div" class="col-xs-6 col-md-3">
-				<div class="panel panel-primary">
-					<div id="tweet-count" class="panel-heading">
-					</div>
-					<div class="panel-body">
-						Tweets
-					</div>
-				</div>
+	<!-- stats div -->
+	<div class="row stats">
+		<div id="tweet-number-div" class="col-md-3">
+			<div class="divider">
+				<span id="tweet-count-span"></span>
 			</div>
-			<div id="date-div" class="col-xs-6 col-md-3">
-				<div class="panel panel-danger">
-					<div id="date-range" class="panel-heading">
-					</div>
-					<div class="panel-body">
-						Date Range
-					</div>
-				</div>
+			<div class="div-title tweet">
+				<h6 class="text-center">Tweet Count</h6>
 			</div>
-			<div id="rate1-div" class="col-xs-6 col-md-3">
-				<div class="panel panel-success">
-					<div id="day-rate" class="panel-heading">
-					</div>
-					<div class="panel-body">
-						Tweet Rate
-					</div>
-				</div>
+		</div>
+		<div id="day-rate-div" class="col-md-3">
+			<div class="divider">
+				<span id="day-rate-span"></span>
+			</div>
+			<div class="div-title day">
+				<h6 class="text-center">Day Rate</h6>
+			</div>
+		</div>
+		<div id="weekly-rate-div" class="col-md-3">
+			<div class="divider">
+				<span id="week-rate-span"></span>
+			</div>
+			<div class="div-title week">
+				<h6 class="text-center">Week Rate</h6>
+			</div>
+		</div>
+		<div id="rank-div" class="col-md-3">
+			<div class="divider">
+				<span id="rank-span"></span>
+			</div>
+			<div class="div-title rank">
+				<h6 class="text-center">Rank</h6>
 			</div>
 		</div>
 	</div>
+	<!-- end of stats div -->
 
-	<div id="region-chart-div">
-	</div>
-
-
+	<!-- chart panel -->
+	<div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center">{{ keyword }} in {{ region }}</h3>
+        </div>
+        <div class="panel-body">
+            <div id="region-chart-div">
+			</div>
+        </div>
+    </div>
+   	<!-- end chart panel -->
 
 {% endblock %}
 
 {% block css_block %}
+	<link href="{% static "css/region.css" %}" rel="stylesheet">
 {% endblock %}
 
 {% block js_block %}

@@ -34,9 +34,11 @@ $(document).ready(function(){
 
         var chart = new google.visualization.GeoChart(document.getElementById('geomap-canvas'));
         chart.draw(data, options);
+        $("#loader-wrapper").fadeOut();
     }
 
     function get_frequency(word, days){
+        $("#loader-wrapper").fadeIn();
         var jqxhr = $.get('/homepage/get_tweet_frequency/', {'keyword' : word, 'count' : days}, function(data){
             frequencies = data;
         }, "json")
@@ -48,6 +50,7 @@ $(document).ready(function(){
     }
 
     function predict(){
+        $("#loader-wrapper").fadeOut();
         $("#predict-button").click(function(){
             console.log("predict button clicked");
             var word = $('#search-field').val();
@@ -73,6 +76,7 @@ $(document).ready(function(){
     };
 
     function get_tweets(word){
+        $("#loader-wrapper").fadeIn();
         var jqxhr = $.get('/homepage/search_keyword/', {keyword: word}, function(data){
             tweets = data;
         })
@@ -81,6 +85,7 @@ $(document).ready(function(){
             map_tweets(tweets);
             $("#prediction-option-div").show();
             $("#stats-province-choices").hide();
+            $("#loader-wrapper").fadeOut();
         })
     }
 
@@ -122,6 +127,5 @@ $(document).ready(function(){
             };
         })
     });
-
     google.setOnLoadCallback(predict);
 });

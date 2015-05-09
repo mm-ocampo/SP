@@ -300,7 +300,6 @@ def get_provincial_stats(request):
 		end_date = datetime.date(datetime.now())
 		start_date = end_date - timedelta(days = 7)
 		m = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date))
-
 		if m:
 			provinceFrequency = get_frequency_per_province(m)
 		json_data = json.dumps(list(provinceFrequency), cls = DjangoJSONEncoder)
@@ -342,6 +341,16 @@ def daily_region_stats(request):
 			dateFrequency['date'] = temp
 			dateFrequency['frequency'] = len(m.filter(date = temp))
 			array_counter.append(dateFrequency)
+		t = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date)).values('region').order_by('-region__count').annotate(Count('region'))
+		rank = 1
+		for item in t:
+			if item['region'] == region:
+				break
+			else:
+				rank += 1
+		temp2 = {}
+		temp2['rank'] = rank
+		array_counter.append(temp2)
 	json_data = json.dumps(list(array_counter), cls = DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type = "application/json")
 
@@ -369,6 +378,16 @@ def daily_province_stats(request):
 			dateFrequency['date'] = temp
 			dateFrequency['frequency'] = len(m.filter(date = temp))
 			array_counter.append(dateFrequency)
+		t = Tweet.objects.filter(keyword = keyword, date__range=(start_date, end_date)).values('province').order_by('-province__count').annotate(Count('province'))
+		rank = 1
+		for item in t:
+			if item['province'] == province:
+				break
+			else:
+				rank += 1
+		temp2 = {}
+		temp2['rank'] = rank
+		array_counter.append(temp2)
 	json_data = json.dumps(list(array_counter), cls = DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type = "application/json")
 
@@ -377,4 +396,4 @@ def province_stats(request, keyword, province):
 	topSearch = view_most_searched()
 	trending = view_trending()
 	context_dict = {'province' : province, 'keyword' : keyword, 'topSearch': topSearch, 'trending': trending}
-	return render(request, 'homepage/province.html', context_dict)	
+	return render(request, 'homepage/province.html', context_dict)
