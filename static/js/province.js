@@ -66,4 +66,5 @@ google.setOnLoadCallback(show_stats);
           drawLineChart(freq_per_day);
       })
   }
+
 });

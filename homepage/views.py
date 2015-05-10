@@ -76,7 +76,7 @@ def search_tweets(keyword):
 	try:
 		log = Tweetlog.objects.get(keyword = keyword)
 		if log:
-			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId), )
+			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId), max_id = int(log.maxId))
 	except Tweetlog.DoesNotExist:
 		tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100)
 	return tweets
@@ -118,25 +118,29 @@ def search_keyword(request):
 
 		# search tweets
 		tweets = search_tweets(keyword)
-		if tweets:
-			temp = []
-			# save each tweet details to db
-			for tweet in tweets:
-				if tweet.coordinates is not None:
-					tweetId = tweet.id_str
-					lon = tweet.coordinates['coordinates'][0]
-					lat = tweet.coordinates['coordinates'][1]
-					date = tweet.created_at
-					# insert each tweet to db
-					insert_tweet(tweetId, k, lon, lat, date)
-					temp.append(tweetId) 
-			# sinceId = tweets[0].id_str
-			sinceId = temp[0]
-			maxId = temp[len(temp) - 1]
-			# maxId = tweets[len(tweets) - 1].id_str
+		while tweets:
+			if tweets:
+				temp = []
+				# save each tweet details to db
+				for tweet in tweets:
+					if tweet.coordinates is not None:
+						tweetId = tweet.id_str
+						lon = tweet.coordinates['coordinates'][0]
+						lat = tweet.coordinates['coordinates'][1]
+						date = tweet.created_at
+						# insert each tweet to db
+						insert_tweet(tweetId, k, lon, lat, date)
+						temp.append(tweetId) 
+				# sinceId = tweets[0].id_str
+				sinceId = temp[0]
+				maxId = temp[len(temp) - 1]
+				# maxId = tweets[len(tweets) - 1].id_str
+				# save/update to tweetlog
+				save_update_tweetlog(sinceId, maxId, k)
+				tweets = search_tweets(keyword)
+			else:
+				break
 
-			# save/update to tweetlog
-			save_update_tweetlog(sinceId, maxId, k)
 		# get all tweet of the keyword from db
 		end_date = datetime.date(datetime.now())
 		start_date = end_date - timedelta(days = 7)

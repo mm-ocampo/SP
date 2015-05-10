@@ -38,19 +38,21 @@ body{
 }
 
 
-#mostsearched-div .panel-primary-custom, #trending-div .panel-primary-custom{
+#home-div .panel-primary-custom, #mostsearched-div .panel-primary-custom, #trending-div .panel-primary-custom{
 	border-color: #D32F2F;
 }
 
-#trending-div .panel-primary > .panel-heading-custom, #mostsearched-div .panel-primary > .panel-heading-custom{
+#home-div .panel-primary > .panel-heading-custom, #trending-div .panel-primary > .panel-heading-custom, #mostsearched-div .panel-primary > .panel-heading-custom{
     background: #D32F2F;
     border-color: #D32F2F;
 }
 
-#trending-div .panel-primary :hover, #mostsearched-div .panel-primary :hover {
+#trending-div .panel-primary :hover, #mostsearched-div .panel-primary :hover, #home-div .panel-primary :hover {
     background: #413d3d;
+    color: white;
 }
 
-#mostsearched-div{
+#mostsearched-div, #trending-div{
 	margin-top: -20px;
 }
+

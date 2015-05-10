@@ -40,6 +40,15 @@
     		<div class="col-md-3">
             <!-- side block starts here -->
                 <!-- collapse for trending topics -->
+                <div class="panel-group" id="home-div">
+                    <div class="panel panel-primary panel-primary-custom">
+                        <div class="panel-heading panel-heading-custom">
+                            <h4 class="panel-title">
+                                <a href="/homepage/">Home</a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
                 <div class="panel-group" id="trending-div">
                     <div class="panel panel-primary panel-primary-custom">
                         <div class="panel-heading panel-heading-custom">
@@ -47,11 +56,11 @@
                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#trending-div" href="#trending-div-list">Trending Diseases</a>
                             </h4>
                         </div>
-                        <div class="panel-collapse collapse in" id="trending-div-list">
+                        <div class="panel-collapse collapse" id="trending-div-list">
                             <div class="list-group">
                                 {% if trending %}
                                     {% for item in trending %}
-                                        <a href="#" class="list-group-item">{{ item.keyword }} </a>
+                                        <div class="list-group-item">{{ item.keyword }}</div>
                                     {% endfor %}
                                     {% else %}
                                         <strong>Nothing to display.</strong>
@@ -70,11 +79,11 @@
                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#mostsearched-div" href="#mostsearched-div-list">Most Searched Diseases</a>
                             </h4>
                         </div>
-                        <div class="panel-collapse collapse in" id="mostsearched-div-list">
+                        <div class="panel-collapse collapse" id="mostsearched-div-list">
                             <div class="list-group">
                                 {% if topSearch %}
                                     {% for item in topSearch %}
-                                        <a href="#" class="list-group-item">{{ item.word }} </a>
+                                        <div class="list-group-item">{{ item.word }}</div>
                                     {% endfor %}
                                 {% else %}
                                     <strong>Nothing to display</strong>
@@ -91,7 +100,9 @@
 			</div>
     	</div>
         <!-- end main body div -->
-    <div>
+
+
+    </div>
 	<script src="{% static "js/jquery-1.11.2.min.js" %}"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
