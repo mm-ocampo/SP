@@ -25,18 +25,22 @@ google.setOnLoadCallback(show_stats);
         str = "<span class='glyphicon glyphicon-arrow-up'></span>";
       }
       else{
+        if(isNaN(dayIncrease) || !isFinite(dayIncrease))
+          dayIncrease = 0;
         str = "<span class='glyphicon glyphicon-arrow-down'></span>";
       }
-      $("#day-rate-span").text(Math.abs(dayIncrease).toFixed(2));
+      $("#day-rate-span").text(Math.abs(dayIncrease).toFixed(0) + "%");
       $("#day-rate-div div").first().append(str);
       var weekIncrease = ((freq_per_day[freq_per_day.length -1]['frequency'] - freq_per_day[0]['frequency'])/freq_per_day[0]['frequency']) * 100;
       if(weekIncrease >= 0){
         str = "<span class='glyphicon glyphicon-arrow-up'></span>";
       }
       else{
+        if(isNaN(weekIncrease) || !isFinite(weekIncrease))
+          weekIncrease = 0;
         str = "<span class='glyphicon glyphicon-arrow-down'></span>";
       }
-      $("#week-rate-span").text(Math.abs(dayIncrease).toFixed(2));
+      $("#week-rate-span").text(Math.abs(weekIncrease).toFixed(0) + "%");
       $("#weekly-rate-div div").first().append(str);
       data.addRows(rows);
 

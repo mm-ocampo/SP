@@ -4,6 +4,7 @@ from django.core import serializers
 from django.db.models import Count, Max
 from django.core.serializers.json import DjangoJSONEncoder
 from datetime import datetime, date, timedelta
+from django.views.decorators.cache import never_cache
 from homepage.models import Tweet, Keyword, Tweetlog
 from ftfy import fix_text
 import json
@@ -34,6 +35,7 @@ def index(request):
 	topSearch = view_most_searched()
 	trending = view_trending()
 	context_dict = {'topSearch': topSearch, 'trending': trending}
+	predictionData = []
 	return render(request, 'homepage/index.html', context_dict)
 
 def insert_tweet(tweetId, k, lon, lat, date):
@@ -73,13 +75,32 @@ def search_tweets(keyword):
 	api = tweepy.API(auth)
 	places = api.geo_search(query = "Philippines", granularity = "country")
 	place_id = places[0].id
+	print("before try")
 	try:
 		log = Tweetlog.objects.get(keyword = keyword)
 		if log:
-			tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100, since_id = int(log.sinceId), max_id = int(log.maxId))
+			print("pased try and it log")
+			tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100, since_id = int(log.sinceId))
+			len(tweets)
 	except Tweetlog.DoesNotExist:
-		tweets = api.search(q = keyword+ " place:%s" % place_id, count = 100)
+		tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100)
+	print(len(tweets))
 	return tweets
+
+def search_older_tweets(keyword):
+	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_token_secret)
+	api = tweepy.API(auth)
+	places = api.geo_search(query = "Philippines", granularity = "country")
+	place_id = places[0].id
+	print('here')
+	maxId = Tweetlog.objects.get(keyword = keyword).maxId
+	tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100, max_id = int(maxId))
+	print(len(tweets))
+	if len(tweets) == 1:
+		return []
+	else:
+		return tweets
 
 def save_update_tweetlog(sinceId, maxId, keyword):
 	try:
@@ -115,14 +136,17 @@ def search_keyword(request):
 
 		# insert/update keyword to database
 		k = insert_update_keyword(keyword)
-
+	
 		# search tweets
+		flag = 0
 		tweets = search_tweets(keyword)
 		while tweets:
 			if tweets:
 				temp = []
 				# save each tweet details to db
 				for tweet in tweets:
+					if flag != 0 and tweet.id_str == maxId:
+						break
 					if tweet.coordinates is not None:
 						tweetId = tweet.id_str
 						lon = tweet.coordinates['coordinates'][0]
@@ -132,12 +156,14 @@ def search_keyword(request):
 						insert_tweet(tweetId, k, lon, lat, date)
 						temp.append(tweetId) 
 				# sinceId = tweets[0].id_str
-				sinceId = temp[0]
-				maxId = temp[len(temp) - 1]
+				if len(temp) != 0:
+					if flag == 0:
+						sinceId = temp[0]
+					maxId = temp[len(temp) - 1]
 				# maxId = tweets[len(tweets) - 1].id_str
 				# save/update to tweetlog
 				save_update_tweetlog(sinceId, maxId, k)
-				tweets = search_tweets(keyword)
+				tweets = search_older_tweets(keyword)
 			else:
 				break
 
@@ -150,6 +176,7 @@ def search_keyword(request):
 	return HttpResponse(markers, content_type = 'application/json')
 
 # ajax for getting prediction data
+@never_cache
 def get_tweet_frequency(request):
 	if request.method == 'GET':
 		keyword = fix_text(request.GET['keyword'])
@@ -233,27 +260,43 @@ def get_dr(beta, i):
 
 def sir_model(item, population, keyword, daysCount):
 	# based from http://wearesocial.net/tag/philippines/
-	# internet users in ph = 37602976
-	# active twitter users = 40%
-	twitterPopulation = 37602976 * 0.4
+	# internet users in ph as of 2015 = 37602976
+	# active twitter users as of 20115 = 40%
+	# twitterPopulation = 37602976 * 0.4
+	# internet users in ph as of 2010 = 14800000
+	# active twitter users as of 2010 = 24.8
+	twitterPopulation = 14800000 * 0.148
 	phPopulation = 92337852
+		
 	# transmitivity rate
 	alpha = compute_alpha(keyword, item['province'])
+	
 	# recovery rate
 	beta = 1/7
 
-	m = Tweet.objects.filter(keyword = keyword, province = item['province'], date = date.today())
-	print(len(m))
+	# m = Tweet.objects.filter(keyword = keyword, province = item['province'], date = date.today())
+	end_date = datetime.date(datetime.now())
+	start_date = end_date - timedelta(days = 7)
+	m = Tweet.objects.filter(keyword = keyword, province = item['province'], date__range=(start_date, end_date))
 	# i1 = round((item['frequency'] * population)/(twitterPopulation * (population/phPopulation)))
-	i1 = round((len(m) * population)/(twitterPopulation * (population/phPopulation)))
+	# i1 = round((len(m) * population)/(twitterPopulation * (population/phPopulation))) + 1
+	# i1 = round((len(m) * population)/(twitterPopulation * (population/phPopulation))) + 1
+	# i1 = round((len(m) * population)/((twitterPopulation * population)/phPopulation)) + 1
+	provinceRatio = population/phPopulation
+	twitterRatio = twitterPopulation * provinceRatio
+	freqRatio = len(m)/twitterRatio
+	final = freqRatio * population
+	i1 = round(final) + 1
 	s1 = population - i1
 	r1 = 0
 	daysCount = int(daysCount)
+	# alpha = alpha / i1
 
 	while daysCount > 0:
 		i0 = i1 / population
-		s0 = s1 / population 
+		s0 = s1 / population
 		r0 = r1 / population
+		alpha = i0 / alpha
 		ds = get_ds(alpha, s0, i0)
 		di = get_di(alpha, s0, i0, beta)
 		dr = get_dr(beta, i0)
@@ -265,6 +308,8 @@ def sir_model(item, population, keyword, daysCount):
 	item['susceptible']  = s1
 	item['infected'] = i1
 	item['recovered'] = r1
+	item['alpha'] = alpha
+	item['ratio'] = (alpha * (s1/population))/beta
 	item['percentage'] = item['infected']/population
 	return item
 

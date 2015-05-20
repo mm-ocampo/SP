@@ -61,6 +61,17 @@
 #rank-div{
 	color: #FBC02D;
 }
+
 .rank{
 	background-color: #FBC02D;
+}
+
+#panel-title{
+	background-color: #212121;
+	color: #FFFFFF;
+	height: 50px;
+}
+
+#panel-title h3{
+	font-size: 20px;
 }

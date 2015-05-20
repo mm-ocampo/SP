@@ -15,13 +15,36 @@ $(document).ready(function(){
         panControl: false
     });
 
+    // to upper case all first letter in a sentence
+    function toTitleCase(str){
+        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    }
+
     function drawMarkersMap(frequencies){
-        var tabledata = [['Province', 'Percentage', 'Infected']];
+        var tabledata = [['Province', 'Reproduction Ratio', 'Possible Infected']];
         for (var i = 0; i < frequencies.length; i++){
-            if(frequencies[i]['province'] ==  "NCR")
-                tabledata.push(["National Capital Region", frequencies[i]['percentage'], frequencies[i]['infected']])
-            else
-                tabledata.push([frequencies[i]['province'], frequencies[i]['percentage'], frequencies[i]['infected']])
+                        if(frequencies[i]['province'] ==  "NCR"){
+                if(frequencies[i]['ratio'] > 1){
+                    tabledata.push(["National Capital Region Status: Epidemic", frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
+                }
+                else if(frequencies[i]['ratio'] > 0.75){
+                    tabledata.push(["National Capital Region Status: Warning", frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
+                }
+                else{
+                    tabledata.push(["National Capital Region Status: Safe", frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
+                }
+            }
+            else{
+                if(frequencies[i]['ratio'] > 1){
+                    tabledata.push([frequencies[i]['province'], frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
+                }
+                else if(frequencies[i]['ratio'] > 0.75){
+                    tabledata.push([frequencies[i]['province'], frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
+                }
+                else{
+                    tabledata.push([frequencies[i]['province'], frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
+                }
+            }
         }
         var data = google.visualization.arrayToDataTable(tabledata);
         var options = {
@@ -34,10 +57,10 @@ $(document).ready(function(){
 
         var chart = new google.visualization.GeoChart(document.getElementById('geomap-canvas'));
         chart.draw(data, options);
-        $("#loader-wrapper").fadeOut();
     }
 
     function get_frequency(word, days){
+        $("#loading-details").text("Preparing Map...");
         $("#loader-wrapper").fadeIn();
         var jqxhr = $.get('/homepage/get_tweet_frequency/', {'keyword' : word, 'count' : days}, function(data){
             frequencies = data;
@@ -46,6 +69,7 @@ $(document).ready(function(){
             console.log('success!');
             console.log(frequencies);
             drawMarkersMap(frequencies);
+            $("#loader-wrapper").fadeOut();
         })
     }
 
@@ -65,6 +89,7 @@ $(document).ready(function(){
     };
 
     function map_tweets(tweets){
+        $("#loading-details").text("Plotting Tweets...");
         console.log(tweets);
         for (var i = 0; i < tweets.length; i++) {
             map.addMarker({
@@ -76,6 +101,7 @@ $(document).ready(function(){
     };
 
     function get_tweets(word){
+        $("#loading-details").text("Retrieving tweets...");
         $("#loader-wrapper").fadeIn();
         var jqxhr = $.get('/homepage/search_keyword/', {keyword: word}, function(data){
             tweets = data;

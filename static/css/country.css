@@ -66,3 +66,12 @@
 	background-color: #4CAF50;
 }
 
+#panel-title, #panel-title2{
+	background-color: #212121;
+	color: #FFFFFF;
+	height: 50px;
+}
+
+#panel-title h3, #panel-title h3{
+	font-size: 20px;
+}

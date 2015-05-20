@@ -144,5 +144,12 @@
 	font-size: 20px;
 }
 
+#geochart-title, #geomap-title{
+	background-color: #413d3d;
+	color: #FFFFFF;
+	height: 50px;
+}
 
-
+#geochart-title h3, #geomap-title h3{
+	font-size: 20px;
+}
