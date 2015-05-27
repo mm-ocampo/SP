@@ -20,30 +20,31 @@ $(document).ready(function(){
         return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     }
 
+    function validateKeyword(keyword){
+        if(keyword == "" || keyword.length < 3){
+            $("#keyword-helper").text("Please input at least 3 characters.");
+            return false;
+        }
+        else{
+            var regex = /^([a-zA-Z][a-zA-Z0-9]+|#[a-zA-Z]+[a-zA-Z0-9]*)$/g
+            if(regex.test(keyword)){
+                return true;
+            }
+            else{
+                $("#keyword-helper").text("Incorrect syntax.");
+                return false;
+            }
+        }
+    }
+
     function drawMarkersMap(frequencies){
         var tabledata = [['Province', 'Reproduction Ratio', 'Possible Infected']];
         for (var i = 0; i < frequencies.length; i++){
-                        if(frequencies[i]['province'] ==  "NCR"){
-                if(frequencies[i]['ratio'] > 1){
-                    tabledata.push(["National Capital Region Status: Epidemic", frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
-                }
-                else if(frequencies[i]['ratio'] > 0.75){
-                    tabledata.push(["National Capital Region Status: Warning", frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
-                }
-                else{
-                    tabledata.push(["National Capital Region Status: Safe", frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
-                }
+            if(frequencies[i]['province'] ==  "ncr"){
+                tabledata.push(["National Capital Region", parseFloat(frequencies[i]['ratio'].toFixed(4)), Math.round(frequencies[i]['infected'])])
             }
             else{
-                if(frequencies[i]['ratio'] > 1){
-                    tabledata.push([frequencies[i]['province'], frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
-                }
-                else if(frequencies[i]['ratio'] > 0.75){
-                    tabledata.push([frequencies[i]['province'], frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
-                }
-                else{
-                    tabledata.push([frequencies[i]['province'], frequencies[i]['ratio'], Math.round(frequencies[i]['infected'])])
-                }
+                tabledata.push([toTitleCase(frequencies[i]['province']), parseFloat(frequencies[i]['ratio'].toFixed(4)), Math.round(frequencies[i]['infected'])])
             }
         }
         var data = google.visualization.arrayToDataTable(tabledata);
@@ -116,13 +117,18 @@ $(document).ready(function(){
     }
 
 	$("#search-button").click(function(){
-		console.log("form submitted");
         var word = $('#search-field').val();
-        $("#ph-stats-link").attr('href', "/homepage/country-stats/" + word +"/");
-        get_tweets(word);
-        $("#search-div").hide();
-        $(".keyword-span").text(word);
-        $("#keyword-div").show();
+        if(validateKeyword(word)){
+            console.log("form submitted");
+            $("#ph-stats-link").attr('href', "/homepage/country-stats/" + word +"/");
+            get_tweets(word);
+            $("#search-div").hide();
+            $(".keyword-span").text(word);
+            $("#keyword-div").show();
+        }
+        else{
+            $("search-field").val("");
+        }
 	});
 
     $("#province-stats-button").click(function(){
@@ -132,7 +138,10 @@ $(document).ready(function(){
         for (var i = 0; i < frequencies.length; i++) {
             var str = frequencies[i]['province'].toLowerCase();
             /*$("#stats-province-choices").append("<option><a href='/homepage/province-stats/"+ str + "/>" + $('#search-field').val() + "/'>" + frequencies[i]['province'] + "</a></option>");*/
-            $("#stats-province-choices").append("<option value='/homepage/province-stats/"+ str + "/" + $('#search-field').val() +"/'>" + frequencies[i]['province'] + "</option>");
+            if(frequencies[i]['province'] == "ncr")
+                $("#stats-province-choices").append("<option value='/homepage/province-stats/"+ str + "/" + $('#search-field').val() +"/'>" + frequencies[i]['province'].toUpperCase() + "</option>");
+            else
+                $("#stats-province-choices").append("<option value='/homepage/province-stats/"+ str + "/" + $('#search-field').val() +"/'>" + toTitleCase(frequencies[i]['province']) + "</option>");
         };   
     });
 
@@ -149,7 +158,10 @@ $(document).ready(function(){
             for (var i = 0; i < regions.length; i++) {
                 var str = regions[i]['region'].toLowerCase();
                 /*$("#stats-province-choices").append("<option><a href='/homepage/province-stats/"+ str + "/>" + $('#search-field').val() + "/'>" + frequencies[i]['province'] + "</a></option>");*/
-                $("#stats-region-choices").append("<option value='/homepage/region-stats/"+ str + "/" + $('#search-field').val() +"/'>" + regions[i]['region'] + "</option>");
+                if(regions[i]['region'] == "ncr" || regions[i]['region'] == "armm" || regions[i]['region'] == "car")
+                    $("#stats-region-choices").append("<option value='/homepage/region-stats/"+ str + "/" + $('#search-field').val() +"/'>" + regions[i]['region'].toUpperCase() + "</option>");
+                else
+                    $("#stats-region-choices").append("<option value='/homepage/region-stats/"+ str + "/" + $('#search-field').val() +"/'>" + toTitleCase(regions[i]['region']) + "</option>");
             };
         })
     });
