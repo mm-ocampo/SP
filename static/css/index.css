@@ -16,7 +16,7 @@
 
 #view-stats-div{
 	display : none;
-	height: 100px;
+	height: 150px;
 }
 
 #search-field{
@@ -66,6 +66,7 @@
 	height: 60px;
 	margin-right: auto;
 	margin-left: auto;
+	padding-top: 30px;
 }
 
 #map-class{
@@ -91,7 +92,7 @@
 }
 
 .div-wrapper{
-	width: 30%;
+	width: 230px;
 	height: 50px;
 	margin-right: auto;
 	margin-left: auto;
@@ -106,7 +107,7 @@
 #geochart-div{
 	display: none;
 	margin-top: 50px;
-	height: 630px;
+	height: 700px;
 	width: 100%;
 }
 
@@ -157,3 +158,4 @@
 #keyword-helper{
 	color: #D32F2F;
 }
+

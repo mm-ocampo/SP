@@ -12,8 +12,8 @@ body > .container-fluid{
 #top-banner{
 	padding: 20px 20px;
 	height: 275px;
-	background-color: #D32F2F;
-	color: #BDC3C7;
+	background-color: #F44336;
+	color: #FFFFFF;
 	font-family: myFirstFont;
 }
 
@@ -28,7 +28,6 @@ body > .container-fluid{
 }
 
 #body-main{
-	padding: 30px 30px;
 	background-color: #ECF0F1;
 }
 
@@ -37,26 +36,44 @@ body{
 	font-family: sans-serif;
 }
 
-
-#home-div .panel-primary-custom, #mostsearched-div .panel-primary-custom, #trending-div .panel-primary-custom{
-	border-color: #D32F2F;
-}
-
-#home-div .panel-primary > .panel-heading-custom, #trending-div .panel-primary > .panel-heading-custom, #mostsearched-div .panel-primary > .panel-heading-custom{
-    background: #D32F2F;
-    border-color: #D32F2F;
-}
-
-#trending-div .panel-primary :hover, #mostsearched-div .panel-primary :hover, #home-div .panel-primary :hover {
-    background: #413d3d;
-    color: white;
-}
-
-#mostsearched-div, #trending-div{
-	margin-top: -20px;
-}
-
 #loading-details{
 	color: white;
 	font-size: 24px;
+}
+
+.row-title-div{
+	font-size: 20px;
+	padding-left: 10px;
+	height: 35px;
+	color: #212121;
+}
+
+.row-title-div:hover{
+	background: #727272;
+	color: white;
+}
+
+#home-link{
+	color: inherit;
+	text-decoration: none;
+}
+
+#sidebar-div{
+	padding-top: 35px;
+}
+
+.trending-span, .most-span{
+	font-size: 17px;
+	color: #D32F2F;
+	display: block;
+	width: 100%;
+	padding-left: 35px;
+}
+
+#trending-div, #most-div{
+	display: none;
+}
+
+#footer-div{
+	background-color: #F44336;
 }

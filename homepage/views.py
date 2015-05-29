@@ -70,30 +70,13 @@ def insert_update_keyword(keyword):
 		k.save()
 	return k
 
-def search_tweets(keyword):
-	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-	auth.set_access_token(access_token, access_token_secret)
-	api = tweepy.API(auth)
-	places = api.geo_search(query = "Philippines", granularity = "country")
-	place_id = places[0].id
-	print("before try")
-	try:
-		log = Tweetlog.objects.get(keyword = keyword)
-		if log:
-			print("pased try and it log")
-			tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100, since_id = int(log.sinceId))
-	except Tweetlog.DoesNotExist:
-		tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100)
-	print(len(tweets))
-	return tweets
-
-def search_older_tweets(keyword, maxId, place_id):
-	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-	auth.set_access_token(access_token, access_token_secret)
-	api = tweepy.API(auth)
-	places = api.geo_search(query = "Philippines", granularity = "country")
-	place_id = places[0].id
-	print('here')
+def search_older_tweets(keyword, maxId, place_id, api):
+	# auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	# auth.set_access_token(access_token, access_token_secret)
+	# api = tweepy.API(auth)
+	# places = api.geo_search(query = "Philippines", granularity = "country")
+	# place_id = places[0].id
+	# print(place_id)
 	# maxId = Tweetlog.objects.get(keyword = keyword).maxId
 	tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100, max_id = int(maxId))
 	print(len(tweets))
@@ -149,13 +132,13 @@ def search_keyword(request):
 		try:
 			log = Tweetlog.objects.get(keyword = keyword)
 			if log:
-				print("pased try and it log")
+				print("pased try and if log")
 				tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100, since_id = int(log.sinceId))
+				endTweetId = log.sinceId
 		except Tweetlog.DoesNotExist:
 			tweets = api.search(q = keyword+ " -no -not -wala place:%s" % place_id, count = 100)
-		# tweets = search_tweets(keyword)
+			endTweetId = "000000"
 		len(tweets)
-		endTweetId = log.sinceId
 		while tweets:
 			if tweets:
 				temp = []
@@ -181,10 +164,10 @@ def search_keyword(request):
 					maxId = temp[len(temp) - 1]
 				# maxId = tweets[len(tweets) - 1].id_str
 				# save/update to tweetlog
-				# save_update_tweetlog(sinceId, maxId, k)
+				save_update_tweetlog(sinceId, maxId, k)
 				print(endChecker)
 				if endChecker == 0:
-					tweets = search_older_tweets(keyword, maxId, place_id)
+					tweets = search_older_tweets(keyword, maxId, place_id, api)
 				else:
 					break
 			else:
@@ -192,7 +175,8 @@ def search_keyword(request):
 
 		# save/update to tweetlog
 		if flag != 0:
-			save_update_tweetlog(sinceId, maxId, k)
+			# save_update_tweetlog(sinceId, maxId, k)
+			print("something")
 
 		# get all tweet of the keyword from db
 		end_date = datetime.date(datetime.now())

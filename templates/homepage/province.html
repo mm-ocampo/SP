@@ -17,7 +17,9 @@
 	<div class="row stats">
 		<div id="tweet-number-div" class="col-md-3">
 			<div class="divider">
-				<span id="tweet-count-span"></span>
+				<div class="divider-inner">
+					<span id="tweet-count-span"></span>
+				</div>
 			</div>
 			<div class="div-title tweet">
 				<h6 class="text-center">Tweet Count</h6>
@@ -25,7 +27,9 @@
 		</div>
 		<div id="day-rate-div" class="col-md-3">
 			<div class="divider">
-				<span id="day-rate-span"></span>
+				<div class="divider-inner">
+					<span id="day-rate-span"></span>
+				</div>
 			</div>
 			<div class="div-title day">
 				<h6 class="text-center">Day Rate</h6>
@@ -33,7 +37,9 @@
 		</div>
 		<div id="weekly-rate-div" class="col-md-3">
 			<div class="divider">
-				<span id="week-rate-span"></span>
+				<div class="divider-inner">
+					<span id="week-rate-span"></span>
+				</div>
 			</div>
 			<div class="div-title week">
 				<h6 class="text-center">Week Rate</h6>
@@ -41,7 +47,9 @@
 		</div>
 		<div id="rank-div" class="col-md-3">
 			<div class="divider">
-				<span id="rank-span"></span>
+				<div class="divider-inner">
+					<span id="rank-span"></span>
+				</div>
 			</div>
 			<div class="div-title rank">
 				<h6 class="text-center">Rank</h6>
@@ -51,16 +59,18 @@
 	<!-- end of stats div -->
 
 	<!-- chart panel -->
-	<div class="panel panel-default">
-        <div id="panel-title" class="panel-heading">
-            <h3 class="panel-title text-center">{{ keyword }} in {{ province }}</h3>
-        </div>
-        <div class="panel-body">
-            <!-- <h1>Propagation Map</h1> -->
-            <div id="province-chart-div">
-			</div>
-        </div>
-    </div>
+	<div id="chart-panel" class="row">
+		<div class="panel panel-default">
+	        <div id="panel-title" class="panel-heading">
+	            <h3 class="panel-title text-center">{{ keyword }} in {{ province }}</h3>
+	        </div>
+	        <div id="panel-body-div" class="panel-body">
+	            <!-- <h1>Propagation Map</h1> -->
+	            <div id="province-chart-div">
+				</div>
+	        </div>
+	    </div>
+	</div>
    	<!-- end chart panel -->
 {% endblock %}
 

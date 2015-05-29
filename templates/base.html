@@ -38,63 +38,40 @@
 
         <!-- main body div -->
     	<div id="body-main" class="row">
-    		<div class="col-md-3">
-            <!-- side block starts here -->
-                <!-- collapse for trending topics -->
-                <div class="panel-group" id="home-div">
-                    <div class="panel panel-primary panel-primary-custom">
-                        <div class="panel-heading panel-heading-custom">
-                            <h4 class="panel-title">
-                                <a href="/homepage/">Home</a>
-                            </h4>
-                        </div>
-                    </div>
+    		<div id="sidebar-div" class="col-md-3">
+                <a id="home-link" href="/homepage/"><div id="sidebar-home-div" class="row row-title-div">
+                    <span class="row-title">Home</span>
+                </div></a>
+                <div id="sidebar-how-div" class="row row-title-div">
+                    <span class="row-title">How It Works</span>
                 </div>
-                <div class="panel-group" id="trending-div">
-                    <div class="panel panel-primary panel-primary-custom">
-                        <div class="panel-heading panel-heading-custom">
-                            <h4 class="panel-title">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#trending-div" href="#trending-div-list">Trending Diseases</a>
-                            </h4>
-                        </div>
-                        <div class="panel-collapse collapse" id="trending-div-list">
-                            <div class="list-group">
-                                {% if trending %}
-                                    {% for item in trending %}
-                                        <div class="list-group-item">{{ item.keyword }}</div>
-                                    {% endfor %}
-                                    {% else %}
-                                        <strong>Nothing to display.</strong>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                <div id="sidebar-trending-div" class="row row-title-div">
+                    <span class="row-title">
+                    Trending Diseases</span>
                 </div>
-                <!-- end collapse for trending topics -->
-
-                <!-- collapse for most searched diseases -->
-                <div class="panel-group" id="mostsearched-div">
-                    <div class="panel panel-primary panel-primary-custom">
-                        <div class="panel-heading panel-heading-custom">
-                            <h4 class="panel-title">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#mostsearched-div" href="#mostsearched-div-list">Most Searched Diseases</a>
-                            </h4>
-                        </div>
-                        <div class="panel-collapse collapse" id="mostsearched-div-list">
-                            <div class="list-group">
-                                {% if topSearch %}
-                                    {% for item in topSearch %}
-                                        <div class="list-group-item">{{ item.word }}</div>
-                                    {% endfor %}
-                                {% else %}
-                                    <strong>Nothing to display</strong>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                <div id="trending-div" class="row" data-toggle="closed">
+                    {% if trending %}
+                        {% for item in trending %}
+                            <span class="trending-span item-span">{{ item.keyword }}</span><br/>
+                        {% endfor %}
+                        {% else %}
+                            <strong>Nothing to display.</strong>
+                    {% endif %}
                 </div>
-                <!-- end collapse for most searched diseases -->
-            <!-- end of side block -->
+                
+                <div id="sidebar-most-div" class="row row-title-div" data-toggle="closed">
+                    <span class="row-title">Most Searched Diseases</span>
+                </div>
+                <div id="most-div" class="row">
+                    {% if topSearch %}
+                        {% for item in topSearch %}
+                            <span class="most-span item-span">{{ item.word }}</span><br/>
+                        {% endfor %}
+                    {% else %}
+                        <strong>Nothing to display</strong>
+                    {% endif %}
+                </div>
+            
     		</div>
 			<div class="col-md-9">
                 {% block main_block %}{% endblock %}
@@ -102,6 +79,11 @@
     	</div>
         <!-- end main body div -->
 
+        <!-- footer div -->
+        <div id="footer-div">
+            <span class="text-center">©2015 All Rights Reserved.</span>
+        </div>
+        <!-- end of footer div -->
 
     </div>
 	<script src="{% static "js/jquery-1.11.2.min.js" %}"></script>

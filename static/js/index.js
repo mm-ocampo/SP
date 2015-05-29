@@ -166,7 +166,7 @@ $(document).ready(function(){
         })
     });
 
-    $(".list-group-item").click(function(){
+    $(".item-span").click(function(){
         var str = $(this).text();
         $("#search-field").val(str);
         $("#search-button").click();
