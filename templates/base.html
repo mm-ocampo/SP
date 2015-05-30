@@ -14,16 +14,17 @@
     {% block css_block %} {% endblock %}
 </head>
 <body>
+    
     <div id="loader-wrapper">
         <div id="loader"></div>
-        <h3 id="loading-details" class="text-center">Loading...</h3>
+        <h3 id="loading-details" class="text-center blink_me">LOADING...</h3>
     </div>
     <div class="container-fluid">
         <!-- bannner div -->
         <div id="top-banner" class="row text-center">
             <img src="{% static "images/logo.png" %}"/>
-            <h1>Preview. Predict. Prevent.</h1>
-            <h3>A site that shows and forecasts the propagation of diseases in the Philippines to save the lives of people.<h3>
+            <h1 id="banner-slogan">Preview. Predict. Prevent.</h1>
+            <h3 id="banner-description">A site that shows and forecasts the propagation of diseases in the Philippines to save the lives of people.<h3>
         </div>
         <!-- end banner div -->
 
@@ -31,7 +32,7 @@
         <div id="nav-div" class="row">
             <div class="col-md-3 text-center">
                 <img src="{% static "images/logo.png" %}"width=50px height=50px />
-                <span id="site-title">Predemic</span>
+                <span id="site-title">PREDICT EPIDEMIC</span>
             </div>
         </div>
         <!-- end divider div -->

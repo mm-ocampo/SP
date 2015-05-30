@@ -1,6 +1,11 @@
 @font-face {
-    font-family: myFirstFont;
-    src: url(../fonts/raleway/webfonts/raleway_thin-webfont.woff);
+    font-family: "Oswald Light";
+    src: url(../fonts/oswald.light.ttf);
+}
+
+@font-face {
+    font-family: "Oswald";
+    src: url(../fonts/oswald.regular.ttf);
 }
 
 body > .container-fluid{
@@ -9,12 +14,54 @@ body > .container-fluid{
 	top: 10%;
 }
 
+.blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
 #top-banner{
 	padding: 20px 20px;
 	height: 275px;
 	background-color: #F44336;
 	color: #FFFFFF;
-	font-family: myFirstFont;
+}
+
+#banner-slogan{
+	font-family: "Oswald";
+}
+
+#banner-description{
+	font-family: "Oswald Light";
 }
 
 #nav-div{
@@ -23,8 +70,9 @@ body > .container-fluid{
 }
 
 #site-title{
-	font-size: 16px;
-	color: #ECF0F1;
+	font-size: 25px;
+	color: #FFFFFF;
+	font-family: "Oswald Light";
 }
 
 #body-main{
@@ -33,12 +81,13 @@ body > .container-fluid{
 
 body{
 	/*background-color: #212121;*/
-	font-family: sans-serif;
+	font-family: "Oswald Light";
 }
 
 #loading-details{
 	color: white;
 	font-size: 24px;
+	font-family: "Oswald Light";
 }
 
 .row-title-div{
@@ -46,9 +95,9 @@ body{
 	padding-left: 10px;
 	height: 35px;
 	color: #212121;
+	font-family: "Oswald";
 }
-
-.row-title-div:hover{
+.row-title-div:hover, .trending-span:hover, .most-span:hover{
 	background: #727272;
 	color: white;
 }
@@ -63,11 +112,13 @@ body{
 }
 
 .trending-span, .most-span{
-	font-size: 17px;
+	font-size: 22px;
 	color: #D32F2F;
 	display: block;
 	width: 100%;
 	padding-left: 35px;
+	font-family: "Oswald Light";
+	margin-bottom: -20px;
 }
 
 #trending-div, #most-div{
